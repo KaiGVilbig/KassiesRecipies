@@ -7,6 +7,7 @@ import { AppDispatch } from '@/redux/store';
 import { setRecipies } from '@/redux/features/recipieSlice';
 import Modal from './Modal';
 import AddRecipieForm from './AddRecipieForm'
+import style from '@/styles/Modal.module.css'
 
 function recipies() {
 
@@ -43,10 +44,9 @@ function recipies() {
 
     return (
         <div>
-            { open && <Modal onClose={() => setOpen(false)}>
-                <AddRecipieForm setOpen={setOpen} />
-            </Modal> }
-            <button onClick={handleAddRecipie}>+</button>
+            <Modal title="Add a Recipie" buttonText="Add">
+                <AddRecipieForm />
+            </Modal>
         </div>
     )
 }

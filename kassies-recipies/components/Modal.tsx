@@ -1,30 +1,40 @@
 import {
     Dialog,
+    DialogClose,
     DialogContent,
     DialogDescription,
+    DialogFooter,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { PropsWithChildren } from "react"
+import { Button } from "@/components/ui/button"
+import { PropsWithChildren, ReactNode } from "react"
 
 interface ModalProps {
-    onClose: Function
+    title: String,
+    buttonText: String,
+    children?: ReactNode
 }
 
-export default function Modal(onClose: ModalProps) {
-    console.log('in')
-    return(
+export default function Modal( { title, buttonText, children }: ModalProps) {
+    return (
         <Dialog>
-            <DialogTrigger>Open</DialogTrigger>
-            <DialogContent>
-                <DialogHeader>
-                <DialogTitle>Are you absolutely sure?</DialogTitle>
-                <DialogDescription>
-                    This action cannot be undone. This will permanently delete your account
-                    and remove your data from our servers.
-                </DialogDescription>
-                </DialogHeader>
+            <DialogTrigger asChild>
+                <Button variant="outline">{buttonText}</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md overflow-y-scroll max-h-[90vh]">
+            <DialogHeader>
+                <DialogTitle>{title}</DialogTitle>
+                {children}
+            </DialogHeader>
+            <DialogFooter className="sm:justify-start">
+                <DialogClose asChild>
+                <Button type="button" variant="secondary">
+                    Cancel
+                </Button>
+                </DialogClose>
+            </DialogFooter>
             </DialogContent>
         </Dialog>
     )
