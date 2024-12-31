@@ -1,19 +1,24 @@
 import { z } from "zod"
+import { Units } from '@/components/enums'
 
-const ingrdients = z.object({
+const ingredients = z.object({
     name: z.string(),
     value: z.number(),
-    type: z.string()
+    type: z.nativeEnum(Units)
+})
+
+const instructions = z.object({
+    value: z.string()
 })
 
 const formSchema = z.object({
     name: z.string(),
-    ingrdients: z.array(ingrdients),
-    instructions: z.array(z.string()),
+    ingredients: z.array(ingredients),
+    instructions: z.array(instructions),
     image: z.string()
 })
 
 export {
-    ingrdients,
+    ingredients,
     formSchema
 }
