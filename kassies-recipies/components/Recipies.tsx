@@ -13,20 +13,15 @@ function recipies() {
 
     const [recipies, setRecipie] = useState<Array<recipie>>([]);
     const [gotRecipies, setGotRecipies] = useState<boolean>(false);
-    const [open, setOpen] = useState<boolean>(false);
 
     const dispatch = useDispatch<AppDispatch>();
-
-    const handleAddRecipie = () => {
-        setOpen(true);
-    }
 
     // Get the recipies from the database
     useEffect(() => {
         if (gotRecipies) return;
 
         const getRecipies = async () => {
-            const res = await fetch('/api/recipies/get', {
+            const res = await fetch('/api/recipie', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -38,7 +33,7 @@ function recipies() {
                 setRecipie(data)
             })
         }
-
+        getRecipies();
         setGotRecipies(true);
     }, [recipies, gotRecipies])
 

@@ -5,7 +5,7 @@ import style from '@/styles/RecipieForm.module.css'
 import { setRecipies } from '@/redux/features/recipieSlice'
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
-import { formSchema } from '@/interfaces/zRecipies'
+import { formSchema, instructions } from '@/interfaces/zRecipies'
 import { Units } from '@/components/enums'
 import { useForm, FieldErrors, useFieldArray } from 'react-hook-form'
 import { Button } from "@/components/ui/button"
@@ -28,6 +28,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { z } from "zod"
 import { zodResolver } from '@hookform/resolvers/zod'
+import { NextApiResponse } from 'next'
 
 function addRecipieForm() {
     const dispatch = useDispatch<AppDispatch>();
@@ -35,7 +36,7 @@ function addRecipieForm() {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: "Yummy yum",
+            name: "",
             ingredients: [{ name: "", value: 0, type: Units.g }],
             instructions: [{ value: "" }],
             image: ""
@@ -67,9 +68,16 @@ function addRecipieForm() {
     }
     const addInstruction = () => {
         const currentInstructions = form.getValues("instructions") || [];
-        console.log(currentInstructions)
         const newInstructions = {value: ""}
         form.setValue("instructions", [...currentInstructions, newInstructions])
+
+        // Make sure none of the textareas gets resized
+        setTimeout(() => {
+            document.querySelectorAll("textarea").forEach((textarea) => {
+                textarea.style.height = "auto";
+                textarea.style.height = `${textarea.scrollHeight}px`;
+            })
+        })
     }
     const removeInstruction = (index: number) => {
         const currentInstructions = form.getValues("instructions");
@@ -78,24 +86,33 @@ function addRecipieForm() {
     }
 
     // Automatically change textarea height
-    const instructionRefs = useRef<(HTMLTextAreaElement | null)[]>([]);
     const handleInstrInput = (e: React.ChangeEvent<HTMLTextAreaElement>, index: number) => {
-        // console.log(e.target.value)
-        const updatedInstructions = [...form.watch("instructions")];
-        updatedInstructions[index].value = e.target.value;
-        form.setValue("instructions", updatedInstructions)
 
-        const textarea = instructionRefs.current[index];
-        if (textarea) {
-            textarea.style.height = "auto";
-            textarea.style.height = `${textarea.scrollHeight}px`;
-        }
+        const textarea = e.target as HTMLTextAreaElement;
+        textarea.style.height = "auto";
+        textarea.style.height = `${textarea.scrollHeight}px`;
     }
 
-    const onSubmit = (values: z.infer<typeof formSchema>) => {
-        
+    const onSubmit = async (values: z.infer<typeof formSchema>) => {
+        // Convert from zod recipie object to recipie interface
+        let instructs: string[] = values.instructions.map((ins: z.infer<typeof instructions>) => ins.value);
+        let recipie: recipie = {
+            _id: "",
+            name: values.name,
+            ingredients: values.ingredients,
+            instructions: instructs,
+            image: ""
+        }
 
-        console.log(values)
+        // Send to database
+        const res = await fetch('/api/recipie', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({action: 'add', recipie})
+        })
+        console.log(res)
     }
 
     const onError = (errors: FieldErrors<z.infer<typeof formSchema>>) => {
@@ -114,91 +131,116 @@ function addRecipieForm() {
                             <FormControl>
                                 <Input placeholder="" {...field} />
                             </FormControl>
+                            {form.formState.errors.name && (
+                                <p className="mt-1 text-sm text-red-500">{form.formState.errors.name.message}</p>
+                            )}
                         </FormItem>
                     )}
-                />
+                /><br />
                 <FormField 
                     control={form.control}
                     name="ingredients"
                     render={({ field }) => (
                         <div>
-                            <h3>Ingredients</h3>
-                            <Button type="button" onClick={addIngredient}>Add</Button>
+                            <div className="flex items-center justify-between mb-2">
+                                <h3 className="text-lg font-medium">Ingredients</h3>
+                                <Button type="button" onClick={addIngredient} className="ml-4">Add</Button>
+                            </div>
                             {ingredientFields.map((field, i) => (
                                 <div key={field.id} className={style.ingredient}>
                                     <Button type="button" onClick={() => removeIngredient(i)} className={style.remove}>-</Button>
                                     <div className={style.spec}>
                                         <FormItem>
-                                            {/* <FormLabel>ingredients</FormLabel> */}
                                             <FormControl>
                                                 <label>Name
                                                     <Input {...form.register(`ingredients.${i}.name` as const)} />
                                                 </label>
                                             </FormControl>
+                                            {form.formState.errors.ingredients?.[i]?.name && (
+                                                <p className="mt-1 text-sm text-red-500">{form.formState.errors.ingredients?.[i]?.name.message}</p>
+                                            )}
                                         </FormItem>
-                                        <FormItem>
-                                            <FormControl>
-                                                <label>Amount
-                                                    <Input type="number" {...form.register(`ingredients.${i}.value`, { valueAsNumber: true })} />
-                                                </label>
-                                            </FormControl>
-                                        </FormItem>
-                                        <FormItem>
-                                            <FormControl>
-                                                <label>Unit
-                                                    <Select 
-                                                        {...form.register(`ingredients.${i}.type`)}
-                                                        defaultValue={field.type}
-                                                        onValueChange={(e) => {
-                                                            let u = e as keyof typeof Units
-                                                            form.setValue(`ingredients.${i}.type`, Units[u])
-                                                        }}
-                                                    >
-                                                        <SelectTrigger className="w-[180px]">
-                                                            <SelectValue placeholder={field.type} />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            {Object.values(Units).map((type, index) => (
-                                                                <SelectItem value={type} key={index}>{type}</SelectItem>
-                                                            ))}
-                                                        </SelectContent>
-                                                    </Select>
-                                                </label>
-                                            </FormControl>
-                                        </FormItem>
+                                        <div className="flex items-center space-x-4">
+                                            <FormItem>
+                                                <FormControl>
+                                                    <label>Amount
+                                                        <Input type="number" {...form.register(`ingredients.${i}.value`, { valueAsNumber: true })} />
+                                                    </label>
+                                                </FormControl>
+                                                {form.formState.errors.ingredients?.[i]?.value && (
+                                                    <p className="mt-1 text-sm text-red-500">{form.formState.errors.ingredients?.[i]?.value.message}</p>
+                                                )}
+                                            </FormItem>
+                                            <FormItem>
+                                                <FormControl>
+                                                    <label>Unit
+                                                        <Select 
+                                                            {...form.register(`ingredients.${i}.type`)}
+                                                            defaultValue={field.type}
+                                                            onValueChange={(e) => {
+                                                                let u = e as keyof typeof Units
+                                                                form.setValue(`ingredients.${i}.type`, Units[u])
+                                                            }}
+                                                        >
+                                                            <SelectTrigger className="w-[180px]">
+                                                                <SelectValue placeholder={field.type} />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                {Object.values(Units).map((type, index) => (
+                                                                    <SelectItem value={type} key={index}>{type}</SelectItem>
+                                                                ))}
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </label>
+                                                </FormControl>
+                                                {form.formState.errors.ingredients?.[i]?.value && (
+                                                    <p className="mt-1 text-sm text-transparent">{form.formState.errors.ingredients?.[i]?.value.message}</p>
+                                                )}
+                                            </FormItem>
+                                        </div>
                                     </div>
                                 </div>
                             ))}
+                            {ingredientFields.length >= 2 ? 
+                                <Button type="button" onClick={addIngredient} className="w-full">Add Ingredient</Button> : <></>
+                            }
                         </div>
                     )}
-                />
+                /><br />
                 <FormField 
                     control={form.control}
                     name="instructions"
                     render={({ field }) => (
                         <div>
-                            <h3>Instructions</h3>
-                            <Button type="button" onClick={addInstruction}>Add</Button>
+                            <div className="flex items-center justify-between mb-2">
+                                <h3 className="text-lg font-medium">Instructions</h3>
+                                <Button type="button" onClick={addInstruction} className="ml-4">Add</Button>
+                            </div>
                             {instructionFields.map((field, i) => (
-                                <div key={field.id} className={style.ingredient}>
+                                <div key={field.id} className={style.instruction}>
                                     <Button type="button" onClick={() => removeInstruction(i)} className={style.remove}>-</Button>
                                     <FormItem >
                                         <FormControl>
                                             <label className={style.label}>{i + 1}:
                                                 <textarea 
                                                     {...form.register(`instructions.${i}.value` as const)}
-                                                    className="block w-full resize-none overflow-hidden rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                    className="block w-full !resize-none overflow-hidden rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                                     rows={1}
-                                                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleInstrInput(e, i)}
+                                                    onInput={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleInstrInput(e, i)}
                                                     placeholder=''
                                                     value={form.watch(`instructions.${i}.value`)}
-                                                    ref={(el) => {instructionRefs.current[i] = el}}
                                                 />
                                             </label>
                                         </FormControl>
+                                        {form.formState.errors.instructions?.[i]?.value && (
+                                            <p className="mt-1 text-sm text-red-500">{form.formState.errors.instructions?.[i]?.value.message}</p>
+                                        )}
                                     </FormItem>
                                 </div>
                             ))}
+                            {instructionFields.length >= 2 ? 
+                                <Button type="button" onClick={addInstruction} className="w-full">Add Instruction</Button> : <></>
+                            }
                         </div>
                     )}
                 />
