@@ -1,6 +1,6 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-
+import { CaseReducer, createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { recipie } from '@/interfaces'
+import { RootState } from "../store"
 
 type Recipies = {
     recipies: Array<recipie>
@@ -26,9 +26,13 @@ export const recipies = createSlice({
                     recipies: action.payload
                 }
             }
+        },
+        addRecipie: (state, action: PayloadAction<recipie>) => {
+            state.value.recipies.push(action.payload);
         }
     }
 })
+export const getRecipies = (state: RootState) => state.recipieReducer.value.recipies;
 
-export const { setRecipies } = recipies.actions;
+export const { setRecipies, addRecipie } = recipies.actions;
 export default recipies.reducer;

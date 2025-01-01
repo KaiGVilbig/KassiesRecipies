@@ -1,8 +1,8 @@
 "use client"
-import React, { useState, FormEvent, useRef, useEffect, useCallback } from 'react'
+import React, { useState } from 'react'
 import { ingredient, recipie, recipieForm } from '@/interfaces'
 import style from '@/styles/RecipieForm.module.css'
-import { setRecipies } from '@/redux/features/recipieSlice'
+import { addRecipie } from '@/redux/features/recipieSlice'
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import { formSchema, instructions } from '@/interfaces/zRecipies'
@@ -12,11 +12,9 @@ import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "@/components/ui/form"
 import {
     Select,
@@ -26,12 +24,21 @@ import {
     SelectValue,
 } from "@/components/ui/select"  
 import { Input } from '@/components/ui/input'
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { AlertCircle } from 'lucide-react'
 import { z } from "zod"
 import { zodResolver } from '@hookform/resolvers/zod'
-import { NextApiResponse } from 'next'
 
-function addRecipieForm() {
+interface AddProps {
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+const errMsgs: string[] = ["An error has occured on the server", "Too many errors occuring, try again later"]
+
+function addRecipieForm({ setIsOpen } : AddProps) {
     const dispatch = useDispatch<AppDispatch>();
+
+    const [error, setError] = useState<number>(0);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -105,14 +112,27 @@ function addRecipieForm() {
         }
 
         // Send to database
-        const res = await fetch('/api/recipie', {
+        await fetch('/api/recipie', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({action: 'add', recipie})
+        }).then(async (res) => {
+            // Error handling and closing dialog
+            if (res.status === 201) {
+                const data = await res.json();
+                dispatch(addRecipie(data.data));
+                setIsOpen(false);
+            } else {
+                setError(error + 1);
+                if (error >= 2) {
+                    setTimeout(() => {
+                        setIsOpen(false);
+                    }, 1000)
+                }
+            }
         })
-        console.log(res)
     }
 
     const onError = (errors: FieldErrors<z.infer<typeof formSchema>>) => {
@@ -244,11 +264,22 @@ function addRecipieForm() {
                         </div>
                     )}
                 />
+                {error > 0 && 
+                    <Alert variant="destructive">
+                        <AlertCircle className="h-4 w-4"/>
+                        <AlertTitle>Error</AlertTitle>
+                        <AlertDescription>{ error < 2 ? errMsgs[0] : errMsgs[1] }</AlertDescription>
+                    </Alert>
+                }
                 <br />
-                <Button type="submit">Submit</Button>
+                <div className="flex justify-end items-center space-x-4">
+                    <Button type="button" variant="secondary" onClick={() => setIsOpen(false)}>Cancel</Button>
+                    <Button type="submit">Submit</Button>
+                </div>
             </form>
         </Form>
     )
 }
 
 export default addRecipieForm
+// FLOZ DOESNT WORK?

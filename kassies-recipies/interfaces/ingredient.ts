@@ -1,5 +1,5 @@
 export default interface ingredient {
-    name: String,
+    name: string,
     value: number,
-    type: String
+    type: string
 }

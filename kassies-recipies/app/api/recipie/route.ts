@@ -4,7 +4,6 @@ import { recipie } from "@/interfaces"
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-    console.log("pp")
     try {
         const data = await req.json();
         const { action, recipie } = data;

@@ -2,19 +2,28 @@
 
 import React, { useEffect, useState } from 'react'
 import { recipie } from '@/interfaces';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
-import { setRecipies } from '@/redux/features/recipieSlice';
+import { setRecipies, getRecipies } from '@/redux/features/recipieSlice';
+import { Button } from "@/components/ui/button"
 import Modal from './Modal';
 import AddRecipieForm from './AddRecipieForm'
-import style from '@/styles/Modal.module.css'
+import ShowRecipie from './ShowRecipie';
+import style from '@/styles/List.module.css'
 
 function recipies() {
-
-    const [recipies, setRecipie] = useState<Array<recipie>>([]);
-    const [gotRecipies, setGotRecipies] = useState<boolean>(false);
-
     const dispatch = useDispatch<AppDispatch>();
+    const recipies = useSelector(getRecipies);
+
+    const [gotRecipies, setGotRecipies] = useState<boolean>(false);
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [openRecipie, setOpenRecipie] = useState<recipie>(recipies[0]);
+    const [isRecipieOpen, setIsRecipieOpen] = useState<boolean>(false);
+
+    const handleOpenRecipie = (r: recipie) => {
+        setOpenRecipie(r);
+        setIsRecipieOpen(true);
+    }
 
     // Get the recipies from the database
     useEffect(() => {
@@ -30,18 +39,26 @@ function recipies() {
             let ret = res.json().then((data) => {
                 console.log(data)
                 dispatch(setRecipies(data));
-                setRecipie(data)
             })
         }
         getRecipies();
         setGotRecipies(true);
-    }, [recipies, gotRecipies])
-
+    }, [gotRecipies])
+    console.log(recipies)
     return (
         <div>
-            <Modal title="Add a Recipie" buttonText="Add">
-                <AddRecipieForm />
+            <Button onClick={() => setIsOpen(true)} variant="outline">Add</Button>
+            <Modal title="Add a Recipie" isOpen={isOpen} setIsOpen={setIsOpen}>
+                <AddRecipieForm setIsOpen={setIsOpen} />
             </Modal>
+            <Modal title={openRecipie?.name} isOpen={isRecipieOpen} setIsOpen={setIsRecipieOpen}>
+                <ShowRecipie recipie={openRecipie} />
+            </Modal>
+            <div className={style.container}>
+                {recipies.map((recipie) => (
+                    <li key={recipie._id} className={`${style.list}`} onClick={() => handleOpenRecipie(recipie)}>{recipie.name}</li>
+                ))}
+            </div>
         </div>
     )
 }

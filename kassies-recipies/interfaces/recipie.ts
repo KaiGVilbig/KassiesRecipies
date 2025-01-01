@@ -1,9 +1,9 @@
 import Ingrdient from './ingredient'
 
 export default interface recipie {
-    _id: String,
-    name: String,
+    _id: string,
+    name: string,
     ingredients: Array<Ingrdient>,
-    instructions: Array<String>,
-    image: String
+    instructions: Array<string>,
+    image: string
 }
