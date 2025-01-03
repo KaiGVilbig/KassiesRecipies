@@ -4,7 +4,7 @@ enum Units {
     cup = "cup",
     tbsp = "tbsp",
     tsp = "tsp",
-    floz = "fl oz"
+    floz = "floz"
 }
 
 export default Units

@@ -11,9 +11,6 @@ export default function Home() {
     <ReduxProvider>
       <Layout>
         <Navbar />
-        <h1 className={style.title}>
-          Kassie's Yummy Recipies
-        </h1>
         <Recipies />
       </Layout>
     </ReduxProvider>

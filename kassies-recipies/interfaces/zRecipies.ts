@@ -4,7 +4,8 @@ import { Units } from '@/components/enums'
 const ingredients = z.object({
     name: z.string().min(1, "Please enter name of ingredient"),
     value: z.number().gt(0),
-    type: z.nativeEnum(Units)
+    type: z.nativeEnum(Units),
+    convAvailable: z.boolean()
 })
 
 const instructions = z.object({
