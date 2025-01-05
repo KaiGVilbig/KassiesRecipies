@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
                 return await addRecipie(recipie);
         }
     } catch (err) {
-        return NextResponse.json({ error: 'Failed to process the request' }, { status: 500 })
+        return NextResponse.json({ error: `Failed to process the request: ${err}` }, { status: 500 })
     }
 }
 
@@ -28,11 +28,11 @@ export async function GET() {
 // POST: Add
 async function addRecipie(recipieToAdd: any) {
     console.log('Connecting to DB')
-    let db = await connectMongoRecipies()
+    const db = await connectMongoRecipies()
     console.log('Connected to DB')
     console.log('Sending')
-    let sendJSON = recipieToAdd
-    let key: string = "_id"
+    const sendJSON = recipieToAdd
+    const key: string = "_id"
     delete sendJSON[key]
     const recipie = await Recipie.create(sendJSON)
     console.log('Sent')
@@ -46,49 +46,49 @@ async function addRecipie(recipieToAdd: any) {
 // GET: Get
 async function getRecipies() {
     console.log('Connecting to DB');
-    let db = await connectMongoRecipies()
+    const db = await connectMongoRecipies()
     console.log('Connected to DB');
     console.log('Getting recipies');
     const recipie = await Recipie.find({})
     console.log('Got recipies');
     db.connection.close();
-    let formatted: Array<recipie> = recipie;
+    const formatted: Array<recipie> = recipie;
 
     return NextResponse.json(formatted)
 }
 
-// POST: Modify
-async function modifyRecipie(req: any, res: any) {
+// // POST: Modify
+// async function modifyRecipie(req: any, res: any) {
 
-    console.log('Connecting to DB')
-    let db = await connectMongoRecipies()
-    console.log('Connected to DB')
-    console.log('Getting')
-    const recipie = await Recipie.findOne(req.body, async (err: any, recipie: any) => {
-        if (err) return;
+//     console.log('Connecting to DB')
+//     let db = await connectMongoRecipies()
+//     console.log('Connected to DB')
+//     console.log('Getting')
+//     const recipie = await Recipie.findOne(req.body, async (err: any, recipie: any) => {
+//         if (err) return;
 
-        recipie.name = req.body.name;
-        recipie.ingredients = req.body.ingredients;
-        recipie.instructions = req.body.instructions;
+//         recipie.name = req.body.name;
+//         recipie.ingredients = req.body.ingredients;
+//         recipie.instructions = req.body.instructions;
 
-        await recipie.save()
-    })
-    console.log('Got')
-    db.connection.close()
+//         await recipie.save()
+//     })
+//     console.log('Got')
+//     db.connection.close()
 
-    res.json({ recipie })
-}
+//     res.json({ recipie })
+// }
 
-// DELETE: Remove
-async function removeRecipie(req: any, res: any) {
+// // DELETE: Remove
+// async function removeRecipie(req: any, res: any) {
 
-    console.log('Connecting to DB')
-    let db = await connectMongoRecipies()
-    console.log('Connected to DB')
-    console.log('Removing')
-    // const recipie = await Recipie.remove({ _id: req.body.id })
-    console.log('Removed')
-    db.connection.close()
+//     console.log('Connecting to DB')
+//     let db = await connectMongoRecipies()
+//     console.log('Connected to DB')
+//     console.log('Removing')
+//     // const recipie = await Recipie.remove({ _id: req.body.id })
+//     console.log('Removed')
+//     db.connection.close()
 
-    // res.json({ recipie })
-}
+//     // res.json({ recipie })
+// }

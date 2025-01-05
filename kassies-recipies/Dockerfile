@@ -1,20 +1,19 @@
-# Use the official Node.js 22.12.0 image for ARM architecture
-FROM arm32v7/node:22-alpine
+# Use the official Node.js 22 image
+FROM node:22-slim
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy package.json and package-lock.json to install dependencies
+# Copy necessary files to the container
 COPY package*.json ./
+COPY .next ./.next
+COPY public ./public
 
-# Install the dependencies
-RUN npm install --no-optional
+# Install production dependencies
+RUN npm install --production
 
-# Copy the rest of the application code to the container
-COPY . .
-
-# Expose port 3000 for the app
+# Expose the port the app runs on
 EXPOSE 3000
 
-# Run the app
+# Start the application
 CMD ["npm", "start"]

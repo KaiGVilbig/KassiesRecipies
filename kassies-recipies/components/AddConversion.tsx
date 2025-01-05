@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useForm, FieldErrors, useFieldArray } from 'react-hook-form'
+import { useForm, FieldErrors } from 'react-hook-form'
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import {
@@ -30,7 +30,7 @@ interface ConversionModal {
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const errMsgs: string[] = ["An error has occured on the server", "Too many errors occuring, try again later"]
+// const errMsgs: string[] = ["An error has occured on the server", "Too many errors occuring, try again later"]
 
 function AddConversion({ setIsOpen } : ConversionModal) {
     const dispatch = useDispatch<AppDispatch>();
@@ -53,7 +53,7 @@ function AddConversion({ setIsOpen } : ConversionModal) {
             values.toGrams /= values.toGrams;
         }
 
-        let conversion: conversion = {
+        const conversion: conversion = {
             _id: "",
             name: values.name.toLowerCase(),
             toGrams: values.isGrams,
@@ -93,7 +93,7 @@ function AddConversion({ setIsOpen } : ConversionModal) {
                 <FormField 
                     control={form.control}
                     name="name"
-                    render={({ field }) => (
+                    render={({}) => (
                         <FormItem>
                             <FormLabel>Ingredient</FormLabel>
                             <FormControl>
@@ -109,7 +109,7 @@ function AddConversion({ setIsOpen } : ConversionModal) {
                     <FormField 
                         control={form.control}
                         name="toGrams"
-                        render={({ field }) => (
+                        render={({}) => (
                             <FormItem>
                                 <FormLabel>Amount</FormLabel>
                                 <FormControl>
@@ -124,7 +124,7 @@ function AddConversion({ setIsOpen } : ConversionModal) {
                     <FormField 
                         control={form.control}
                         name="unit"
-                        render={({ field }) => (
+                        render={({}) => (
                             <FormItem>
                                 <FormControl>
                                     <label>Unit
@@ -132,7 +132,7 @@ function AddConversion({ setIsOpen } : ConversionModal) {
                                             {...form.register(`unit`)}
                                             defaultValue={Units.cup}
                                             onValueChange={(e) => {
-                                                let u = e as keyof typeof Units
+                                                const u = e as keyof typeof Units
                                                 form.setValue(`unit`, Units[u])
                                             }}
                                         >
@@ -161,7 +161,7 @@ function AddConversion({ setIsOpen } : ConversionModal) {
                     <FormField 
                         control={form.control}
                         name="isGrams"
-                        render={({ field }) => (
+                        render={({}) => (
                             <FormItem>
                                 <FormLabel>Amount</FormLabel>
                                 <FormControl>
@@ -176,7 +176,7 @@ function AddConversion({ setIsOpen } : ConversionModal) {
                     <FormField 
                         control={form.control}
                         name="unit"
-                        render={({ field }) => (
+                        render={({}) => (
                             <FormItem>
                                 <FormControl>
                                     <label>Unit
@@ -185,7 +185,7 @@ function AddConversion({ setIsOpen } : ConversionModal) {
                                             defaultValue={Units.g}
                                             disabled={true}
                                             onValueChange={(e) => {
-                                                let u = e as keyof typeof Units
+                                                const u = e as keyof typeof Units
                                                 form.setValue(`unit`, Units[u])
                                             }}
                                         >

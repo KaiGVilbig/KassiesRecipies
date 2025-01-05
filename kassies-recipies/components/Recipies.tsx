@@ -13,7 +13,7 @@ import ShowRecipie from './ShowRecipie';
 import AddConversion from './AddConversion';
 import style from '@/styles/List.module.css'
 
-function recipies() {
+function Recipies() {
     const dispatch = useDispatch<AppDispatch>();
     const recipies = useSelector(getRecipies);
     const conversions = useSelector(getConversions);
@@ -41,7 +41,7 @@ function recipies() {
                     'Content-Type': 'application/json'
                 }
             })
-            let ret = res.json().then((data) => {
+            res.json().then((data) => {
                 console.log(data)
                 dispatch(setRecipies(data));
                 setGotRecipies(true);
@@ -58,14 +58,14 @@ function recipies() {
                     'Content-Type': 'application/json'
                 }
             })
-            let ret = res.json().then((data) => {
+            res.json().then((data) => {
                 console.log(data)
                 dispatch(setConversions(data))
             })
         }
 
         getRecipies();
-    }, [gotRecipies, gotConversions])
+    }, [gotRecipies, gotConversions, dispatch])
 
     return (
         <div className="flex justify-center items-start h-screen p-4">
@@ -92,4 +92,4 @@ function recipies() {
     )
 }
 
-export default recipies
+export default Recipies

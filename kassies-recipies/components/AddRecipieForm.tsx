@@ -1,11 +1,11 @@
 "use client"
 import React, { useState } from 'react'
-import { conversion, ingredient, recipie, recipieForm } from '@/interfaces'
+import { conversion, ingredient, recipie } from '@/interfaces'
 import style from '@/styles/RecipieForm.module.css'
 import { addRecipie } from '@/redux/features/recipieSlice'
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
-import { formSchema, ingredients, instructions } from '@/interfaces/zRecipies'
+import { formSchema, instructions } from '@/interfaces/zRecipies'
 import { Units } from '@/components/enums'
 import { useForm, FieldErrors, useFieldArray } from 'react-hook-form'
 import { Button } from "@/components/ui/button"
@@ -37,7 +37,7 @@ interface AddProps {
 
 const errMsgs: string[] = ["An error has occured on the server", "Too many errors occuring, try again later"]
 
-function addRecipieForm({ setIsOpen, conversions } : AddProps) {
+function AddRecipieForm({ setIsOpen, conversions } : AddProps) {
     const dispatch = useDispatch<AppDispatch>();
     console.log(conversions)
     const [error, setError] = useState<number>(0);
@@ -55,11 +55,11 @@ function addRecipieForm({ setIsOpen, conversions } : AddProps) {
     const control = form.control;
 
     // Set up watchers
-    const { fields: ingredientFields, append: appendIngredient, remove: removeIngredients } = useFieldArray({
+    const { fields: ingredientFields } = useFieldArray({
         control,
         name: "ingredients"
     });
-    const { fields: instructionFields, append: appendInstructions, remove: removeInstructions } = useFieldArray({
+    const { fields: instructionFields } = useFieldArray({
         control,
         name: "instructions"
     });
@@ -96,7 +96,7 @@ function addRecipieForm({ setIsOpen, conversions } : AddProps) {
     }
 
     // Automatically change textarea height
-    const handleInstrInput = (e: React.ChangeEvent<HTMLTextAreaElement>, index: number) => {
+    const handleInstrInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 
         const textarea = e.target as HTMLTextAreaElement;
         textarea.style.height = "auto";
@@ -104,7 +104,7 @@ function addRecipieForm({ setIsOpen, conversions } : AddProps) {
     }
 
     const handlePossibleConv = (index: number, unit: Units) => {
-        let ing = form.getValues(`ingredients.${index}`);
+        const ing = form.getValues(`ingredients.${index}`);
         
         const found = conversions.find(obj => obj.name === ing.name && obj.unit == unit)
         if (found) {
@@ -116,11 +116,11 @@ function addRecipieForm({ setIsOpen, conversions } : AddProps) {
     }
 
     const handleConvert = (index: number) => {
-        let ing: ingredient = form.getValues(`ingredients.${index}`);
+        const ing: ingredient = form.getValues(`ingredients.${index}`);
         const found = conversions.find(obj => obj.name === ing.name && obj.unit == ing.type)
 
         if (found && ing.value > 0) {
-            let newIng: number = toGrams(ing, found);
+            const newIng: number = toGrams(ing, found);
             form.setValue(`ingredients.${index}.value`, newIng);
             form.setValue(`ingredients.${index}.type`, Units.g);
             form.setValue(`ingredients.${index}.convAvailable`, false);
@@ -130,8 +130,8 @@ function addRecipieForm({ setIsOpen, conversions } : AddProps) {
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         // Convert from zod recipie object to recipie interface
-        let instructs: string[] = values.instructions.map((ins: z.infer<typeof instructions>) => ins.value);
-        let recipie: recipie = {
+        const instructs: string[] = values.instructions.map((ins: z.infer<typeof instructions>) => ins.value);
+        const recipie: recipie = {
             _id: "",
             name: values.name,
             ingredients: values.ingredients,
@@ -188,7 +188,7 @@ function addRecipieForm({ setIsOpen, conversions } : AddProps) {
                 <FormField 
                     control={form.control}
                     name="ingredients"
-                    render={({ field }) => (
+                    render={({}) => (
                         <div>
                             <div className="flex items-center justify-between mb-2">
                                 <h3 className="text-lg font-medium">Ingredients</h3>
@@ -230,7 +230,7 @@ function addRecipieForm({ setIsOpen, conversions } : AddProps) {
                                                             {...form.register(`ingredients.${i}.type`)}
                                                             defaultValue={form.getValues(`ingredients.${i}.type`)}
                                                             onValueChange={(e) => {
-                                                                let u = e as keyof typeof Units
+                                                                const u = e as keyof typeof Units
                                                                 handlePossibleConv(i, Units[u])
                                                                 form.setValue(`ingredients.${i}.type`, Units[u])
                                                             }}
@@ -267,7 +267,7 @@ function addRecipieForm({ setIsOpen, conversions } : AddProps) {
                 <FormField 
                     control={form.control}
                     name="instructions"
-                    render={({ field }) => (
+                    render={({}) => (
                         <div>
                             <div className="flex items-center justify-between mb-2">
                                 <h3 className="text-lg font-medium">Instructions</h3>
@@ -283,7 +283,7 @@ function addRecipieForm({ setIsOpen, conversions } : AddProps) {
                                                     {...form.register(`instructions.${i}.value` as const)}
                                                     className="block w-full !resize-none overflow-hidden rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent "
                                                     rows={1}
-                                                    onInput={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleInstrInput(e, i)}
+                                                    onInput={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleInstrInput(e)}
                                                     placeholder=''
                                                     value={form.watch(`instructions.${i}.value`)}
                                                 />
@@ -318,5 +318,4 @@ function addRecipieForm({ setIsOpen, conversions } : AddProps) {
     )
 }
 
-export default addRecipieForm
-// FLOZ DOESNT WORK?
+export default AddRecipieForm
