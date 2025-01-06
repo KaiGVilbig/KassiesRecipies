@@ -5,5 +5,7 @@ export default interface recipie {
     name: string,
     ingredients: Array<Ingrdient>,
     instructions: Array<string>,
-    image: string
+    image: string,
+    servings: number,
+    cals: number
 }

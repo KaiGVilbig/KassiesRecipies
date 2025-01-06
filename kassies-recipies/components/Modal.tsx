@@ -17,7 +17,7 @@ export default function Modal( { title, children, isOpen, setIsOpen }: ModalProp
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogContent className="sm:max-w-md overflow-y-scroll max-h-[90vh]">
+            <DialogContent className="sm:max-w-md overflow-y-scroll max-h-[90vh]" onInteractOutside={(e) => e.preventDefault()}>
             <DialogHeader>
                 <DialogTitle>{title}</DialogTitle>
                 {children}

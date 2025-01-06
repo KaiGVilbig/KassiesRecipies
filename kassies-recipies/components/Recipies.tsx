@@ -79,8 +79,8 @@ function Recipies() {
             <div className='w-[10px]'></div>
             <div className={style.container}>
                 {recipies.filter(r => r.name.includes(search)).map((recipie) => (
-                    <li key={recipie._id} className={`${style.list}`} onClick={() => handleOpenRecipie(recipie)}>
-                        {recipie.image !== "" && <Image src={`/api/uploads/${recipie.image}`} alt={recipie.image} className={style.image} />}
+                    <li key={recipie._id} className={`${style.list} flex justify-start items-start`} onClick={() => handleOpenRecipie(recipie)}>
+                        {recipie.image !== "" && <Image width={0} height={0} sizes='100vh' src={`/api/uploads/${recipie.image}`} alt={recipie.image} className={style.image} />}
                         &nbsp;{recipie.name}
                     </li>
                 ))}

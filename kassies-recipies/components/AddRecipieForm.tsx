@@ -50,7 +50,9 @@ function AddRecipieForm({ setIsOpen, conversions } : AddProps) {
             name: "",
             ingredients: [{ name: "", value: 0, type: Units.g, convAvailable: false }],
             instructions: [{ value: "" }],
-            image: ""
+            image: "",
+            servings: 1,
+            cals: 0
         }
     })
     const control = form.control;
@@ -143,7 +145,9 @@ function AddRecipieForm({ setIsOpen, conversions } : AddProps) {
             name: values.name,
             ingredients: values.ingredients,
             instructions: instructs,
-            image: ""
+            image: "",
+            servings: values.servings,
+            cals: values.cals
         }
         const formData = new FormData();
         formData.append('action', 'add');
@@ -198,6 +202,26 @@ function AddRecipieForm({ setIsOpen, conversions } : AddProps) {
                         </FormItem>
                     )}
                 /><br />
+                <div className="flex items-center space-x-4">
+                    <FormField 
+                        control={form.control}
+                        name="servings"
+                        render={({}) => (
+                            <label>Servings
+                                <Input type="number" {...form.register(`servings`, { valueAsNumber: true })} />
+                            </label>
+                        )}
+                    />
+                    <FormField 
+                        control={form.control}
+                        name="cals"
+                        render={({}) => (
+                            <label>Calories
+                                <Input type="number" {...form.register(`cals`, { valueAsNumber: true })} />
+                            </label>
+                        )}
+                    />
+                </div><br />
                 <FormField 
                     control={form.control}
                     name="ingredients"
