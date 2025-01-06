@@ -7,11 +7,13 @@ import { AppDispatch } from '@/redux/store';
 import { setRecipies, getRecipies } from '@/redux/features/recipieSlice';
 import { setConversions, getConversions } from '@/redux/features/conversionSlice';
 import { Button } from "@/components/ui/button"
+import { Input } from '@/components/ui/input'
 import Modal from './Modal';
 import AddRecipieForm from './AddRecipieForm'
 import ShowRecipie from './ShowRecipie';
 import AddConversion from './AddConversion';
 import style from '@/styles/List.module.css'
+import Image from 'next/image';
 
 function Recipies() {
     const dispatch = useDispatch<AppDispatch>();
@@ -24,10 +26,15 @@ function Recipies() {
     const [openRecipie, setOpenRecipie] = useState<recipie>(recipies[0]);
     const [isRecipieOpen, setIsRecipieOpen] = useState<boolean>(false);
     const [isConversionOpen, setIsConversionOpen] = useState<boolean>(false);
+    const [search, setSearch] = useState<string>("")
 
     const handleOpenRecipie = (r: recipie) => {
         setOpenRecipie(r);
         setIsRecipieOpen(true);
+    }
+
+    const handleSearch = (value: string) => {
+        setSearch(value);
     }
 
     // Get the recipies and conversions from the database
@@ -71,11 +78,15 @@ function Recipies() {
         <div className="flex justify-center items-start h-screen p-4">
             <div className='w-[10px]'></div>
             <div className={style.container}>
-                {recipies.map((recipie) => (
-                    <li key={recipie._id} className={`${style.list}`} onClick={() => handleOpenRecipie(recipie)}>{recipie.name}</li>
+                {recipies.filter(r => r.name.includes(search)).map((recipie) => (
+                    <li key={recipie._id} className={`${style.list}`} onClick={() => handleOpenRecipie(recipie)}>
+                        {recipie.image !== "" && <Image src={`/api/uploads/${recipie.image}`} alt={recipie.image} className={style.image} />}
+                        &nbsp;{recipie.name}
+                    </li>
                 ))}
             </div>
             <div className="w-[10px] flex flex-col items-end space-y-4 mr-10">
+                <Input type="text" className="px-3 py-2 w-50" placeholder="Search..." onChange={(e) => handleSearch(e.target.value)} />
                 <Button onClick={() => setIsOpen(true)} variant="outline">Add Recipie</Button>
                 <Button onClick={() => setIsConversionOpen(true)} variant="outline">Add Conversion</Button>
             </div>

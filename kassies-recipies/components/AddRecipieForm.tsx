@@ -42,6 +42,7 @@ function AddRecipieForm({ setIsOpen, conversions } : AddProps) {
     console.log(conversions)
     const [error, setError] = useState<number>(0);
     const [forceRefresh, setForceRefresh] = useState<boolean>(false);
+    const [image, setImage] = useState<File | null>(null);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -103,6 +104,12 @@ function AddRecipieForm({ setIsOpen, conversions } : AddProps) {
         textarea.style.height = `${textarea.scrollHeight}px`;
     }
 
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            setImage(e.target.files[0]);
+        }
+    }
+
     const handlePossibleConv = (index: number, unit: Units) => {
         const ing = form.getValues(`ingredients.${index}`);
         
@@ -138,14 +145,20 @@ function AddRecipieForm({ setIsOpen, conversions } : AddProps) {
             instructions: instructs,
             image: ""
         }
+        const formData = new FormData();
+        formData.append('action', 'add');
+        if (image instanceof File) {
+            formData.append("image", image);
+            const now: Date = new Date()
+            const dateAsString = `${now.getMonth() + 1}_${now.getDate()}_${now.getFullYear()}-${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}`
+            recipie.image = recipie.name.replace(' ', '_') + '-' + dateAsString + image.name.slice(image.name.indexOf('.'));
+        }
+        formData.append("recipie", JSON.stringify(recipie));
 
         // Send to database
         await fetch('/api/recipie', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({action: 'add', recipie})
+            body: formData
         }).then(async (res) => {
             // Error handling and closing dialog
             if (res.status === 201) {
@@ -216,7 +229,7 @@ function AddRecipieForm({ setIsOpen, conversions } : AddProps) {
                                             <FormItem>
                                                 <FormControl>
                                                     <label>Amount
-                                                        <Input type="number" {...form.register(`ingredients.${i}.value`, { valueAsNumber: true })} />
+                                                        <Input type="number" {...form.register(`ingredients.${i}.value`, { valueAsNumber: true })} step="any" />
                                                     </label>
                                                 </FormControl>
                                                 {form.formState.errors.ingredients?.[i]?.value && (
@@ -299,6 +312,16 @@ function AddRecipieForm({ setIsOpen, conversions } : AddProps) {
                                 <Button type="button" onClick={addInstruction} className="w-full">Add Instruction</Button> : <></>
                             }
                         </div>
+                    )}
+                />
+                <FormField 
+                    control={form.control}
+                    name="image"
+                    render={({}) => (
+                        <FormItem>
+                            <label htmlFor='image'>Choose an image:</label>
+                            <Input type="file" id="image" name="image" accept="image/*" onChange={handleImageChange} />
+                        </FormItem>
                     )}
                 />
                 {error > 0 && 

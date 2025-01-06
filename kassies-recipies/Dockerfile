@@ -8,6 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 COPY .next ./.next
 COPY public ./public
+COPY uploads ./uploads
 
 # Install production dependencies
 RUN npm install --production

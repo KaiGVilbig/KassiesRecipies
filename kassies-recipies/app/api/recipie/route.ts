@@ -2,19 +2,38 @@ import { connectMongoRecipies } from "@/utils";
 import { Recipie } from "@/models";
 import { recipie } from "@/interfaces"
 import { NextRequest, NextResponse } from "next/server";
+import path from "path";
+import { writeFile } from "fs/promises";
+
+const uploadDir = path.join(process.cwd(), 'uploads');
+
+export const config = {
+    api: {
+        bodyParser: false
+    }
+}
+
 
 export async function POST(req: NextRequest) {
     try {
-        const data = await req.json();
-        const { action, recipie } = data;
-        console.log(action, recipie)
+        const data = await req.formData();
+        const file: File | null = data.get('image') as unknown as File
+        const action = data.get('action') as unknown as string
+        const recipie = data.get('recipie') as unknown as string
+
         if (!action || !recipie) {
             return NextResponse.json({ error: 'Missing action or recipie data' }, { status: 500 })
+        }
+        if (file) {
+            const bytes = await file.arrayBuffer()
+            const buffer = Buffer.from(bytes);
+            const path = `${uploadDir}/${JSON.parse(recipie).image}`
+            await writeFile(path, buffer);
         }
 
         switch (action) {
             case 'add':
-                return await addRecipie(recipie);
+                return await addRecipie(JSON.parse(recipie));
         }
     } catch (err) {
         return NextResponse.json({ error: `Failed to process the request: ${err}` }, { status: 500 })
@@ -27,6 +46,8 @@ export async function GET() {
 
 // POST: Add
 async function addRecipie(recipieToAdd: any) {
+    console.log("here")
+    console.log(recipieToAdd)
     console.log('Connecting to DB')
     const db = await connectMongoRecipies()
     console.log('Connected to DB')
