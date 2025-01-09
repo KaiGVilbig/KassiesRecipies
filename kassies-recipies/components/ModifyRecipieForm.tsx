@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { conversion, ingredient, recipie } from '@/interfaces'
 import style from '@/styles/RecipieForm.module.css'
-import { addRecipie } from '@/redux/features/recipieSlice'
+import { modifyRecipie } from '@/redux/features/recipieSlice'
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import { formSchema, instructions } from '@/interfaces/zRecipies'
@@ -32,12 +32,15 @@ import toGrams from './Converter'
 
 interface AddProps {
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
+    setModMode: React.Dispatch<React.SetStateAction<boolean>>,
+    setRecipie: React.Dispatch<React.SetStateAction<recipie>>,
+    recipie: recipie,
     conversions: Array<conversion>
 }
 
 const errMsgs: string[] = ["An error has occured on the server", "Too many errors occuring, try again later"]
 
-function AddRecipieForm({ setIsOpen, conversions } : AddProps) {
+function AddRecipieForm({ conversions, setModMode, recipie, setRecipie } : AddProps) {
     const dispatch = useDispatch<AppDispatch>();
     const [error, setError] = useState<number>(0);
     const [forceRefresh, setForceRefresh] = useState<boolean>(false);
@@ -46,12 +49,12 @@ function AddRecipieForm({ setIsOpen, conversions } : AddProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: "",
-            ingredients: [{ name: "", value: 0, type: Units.g, convAvailable: false }],
-            instructions: [{ value: "" }],
+            name: recipie.name,
+            ingredients: recipie.ingredients.map((i) => {return { name: i.name, value: i.value, type: Units[i.type as Units], convAvailable: false }}),
+            instructions: recipie.instructions.map((i) => {return { value: i }}),
             image: "",
-            servings: 1,
-            cals: 0
+            servings: recipie.servings,
+            cals: recipie.cals
         }
     })
     const control = form.control;
@@ -138,24 +141,25 @@ function AddRecipieForm({ setIsOpen, conversions } : AddProps) {
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         // Convert from zod recipie object to recipie interface
         const instructs: string[] = values.instructions.map((ins: z.infer<typeof instructions>) => ins.value);
-        const recipie: recipie = {
-            _id: "",
+        const modRecipie: recipie = {
+            _id: recipie._id,
             name: values.name,
             ingredients: values.ingredients,
             instructions: instructs,
-            image: "",
+            image: recipie.image,
             servings: values.servings,
             cals: values.cals
         }
         const formData = new FormData();
-        formData.append('action', 'add');
+        formData.append('action', 'modify');
         if (image instanceof File) {
             formData.append("image", image);
             const now: Date = new Date()
             const dateAsString = `${now.getMonth() + 1}_${now.getDate()}_${now.getFullYear()}-${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}`
-            recipie.image = recipie.name.replace(' ', '_') + '-' + dateAsString + image.name.slice(image.name.indexOf('.'));
+            modRecipie.image = modRecipie.name.replace(' ', '_') + '-' + dateAsString + image.name.slice(image.name.indexOf('.'));
         }
-        formData.append("recipie", JSON.stringify(recipie));
+        formData.append("recipie", JSON.stringify(modRecipie));
+        formData.append("oldImageLocaltion", recipie.image);
 
         // Send to database
         await fetch('/api/recipie', {
@@ -165,13 +169,15 @@ function AddRecipieForm({ setIsOpen, conversions } : AddProps) {
             // Error handling and closing dialog
             if (res.status === 201) {
                 const data = await res.json();
-                dispatch(addRecipie(data.data));
-                setIsOpen(false);
+                // TODO
+                dispatch(modifyRecipie(data.data));
+                setRecipie(data.data);
+                setModMode(false);
             } else {
                 setError(error + 1);
                 if (error >= 2) {
                     setTimeout(() => {
-                        setIsOpen(false);
+                        setModMode(false);
                     }, 1000)
                 }
             }
@@ -192,7 +198,7 @@ function AddRecipieForm({ setIsOpen, conversions } : AddProps) {
                         <FormItem>
                             <FormLabel>Da Yummy's Name</FormLabel>
                             <FormControl>
-                                <Input placeholder="" {...field} />
+                                <Input placeholder={""} {...field} />
                             </FormControl>
                             {form.formState.errors.name && (
                                 <p className="mt-1 text-sm text-red-500">{form.formState.errors.name.message}</p>
@@ -335,13 +341,13 @@ function AddRecipieForm({ setIsOpen, conversions } : AddProps) {
                             }
                         </div>
                     )}
-                />
+                /><br />
                 <FormField 
                     control={form.control}
                     name="image"
                     render={({}) => (
                         <FormItem>
-                            <label htmlFor='image'>Choose an image:</label>
+                            <label htmlFor='image'>Choose an image: {recipie.image !== "" ? "*you already have an image for this recipie, this will replace the current image" : ""}</label>
                             <Input type="file" id="image" name="image" accept="image/*" onChange={handleImageChange} />
                         </FormItem>
                     )}
@@ -355,7 +361,7 @@ function AddRecipieForm({ setIsOpen, conversions } : AddProps) {
                 }
                 <br />
                 <div className="flex justify-end items-center space-x-4">
-                    <Button type="button" variant="secondary" onClick={() => setIsOpen(false)}>Cancel</Button>
+                    <Button type="button" variant="secondary" onClick={() => setModMode(false)}>Cancel</Button>
                     <Button type="submit">Submit</Button>
                 </div>
             </form>

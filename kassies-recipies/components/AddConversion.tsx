@@ -47,7 +47,6 @@ function AddConversion({ setIsOpen } : ConversionModal) {
     const [error, setError] = useState<number>(0);
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
-        console.log(values)
         if (values.toGrams != 1) {
             values.isGrams /= values.toGrams;
             values.toGrams /= values.toGrams;

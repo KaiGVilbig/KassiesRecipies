@@ -49,7 +49,6 @@ function Recipies() {
                 }
             })
             res.json().then((data) => {
-                console.log(data)
                 dispatch(setRecipies(data));
                 setGotRecipies(true);
                 getConversions();
@@ -66,7 +65,6 @@ function Recipies() {
                 }
             })
             res.json().then((data) => {
-                console.log(data)
                 dispatch(setConversions(data))
             })
         }
@@ -97,7 +95,7 @@ function Recipies() {
                 <AddConversion setIsOpen={setIsConversionOpen} />
             </Modal>
             <Modal title={openRecipie?.name} isOpen={isRecipieOpen} setIsOpen={setIsRecipieOpen}>
-                <ShowRecipie recipie={openRecipie} />
+                <ShowRecipie recipie={openRecipie} setIsOpen={setIsOpen} conversions={conversions} />
             </Modal>
         </div>
     )

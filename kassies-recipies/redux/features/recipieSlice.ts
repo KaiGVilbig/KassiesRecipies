@@ -29,10 +29,16 @@ export const recipies = createSlice({
         },
         addRecipie: (state, action: PayloadAction<recipie>) => {
             state.value.recipies.push(action.payload);
+        },
+        modifyRecipie: (state, action: PayloadAction<recipie>) => {
+            const index = state.value.recipies.findIndex((r) => r._id === action.payload._id)
+            if (index !== -1) { 
+                state.value.recipies[index] = action.payload
+            }
         }
     }
 })
 export const getRecipies = (state: RootState) => state.recipieReducer.value.recipies;
 
-export const { setRecipies, addRecipie } = recipies.actions;
+export const { setRecipies, addRecipie, modifyRecipie } = recipies.actions;
 export default recipies.reducer;

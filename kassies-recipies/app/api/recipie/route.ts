@@ -3,7 +3,7 @@ import { Recipie } from "@/models";
 import { recipie } from "@/interfaces"
 import { NextRequest, NextResponse } from "next/server";
 import path from "path";
-import { writeFile } from "fs/promises";
+import { writeFile, unlink } from "fs/promises";
 
 const uploadDir = path.join(process.cwd(), 'uploads');
 
@@ -20,20 +20,27 @@ export async function POST(req: NextRequest) {
         const file: File | null = data.get('image') as unknown as File
         const action = data.get('action') as unknown as string
         const recipie = data.get('recipie') as unknown as string
-
+        const oldImage = data.get('oldImageLocaltion') as unknown as string
+        console.log('got fields')
         if (!action || !recipie) {
             return NextResponse.json({ error: 'Missing action or recipie data' }, { status: 500 })
         }
         if (file) {
-            const bytes = await file.arrayBuffer()
+            const bytes = await file.arrayBuffer();
             const buffer = Buffer.from(bytes);
-            const path = `${uploadDir}/${JSON.parse(recipie).image}`
+            const path = `${uploadDir}/${JSON.parse(recipie).image}`;
             await writeFile(path, buffer);
+            console.log(oldImage)
+            if (oldImage) {
+                const path = `${uploadDir}/${oldImage}`;
+                await unlink(path);
+            }
         }
-
         switch (action) {
             case 'add':
                 return await addRecipie(JSON.parse(recipie));
+            case 'modify':
+                return await modifyRecipie(JSON.parse(recipie) as recipie);
         }
     } catch (err) {
         return NextResponse.json({ error: `Failed to process the request: ${err}` }, { status: 500 })
@@ -79,26 +86,20 @@ async function getRecipies() {
 }
 
 // // POST: Modify
-// async function modifyRecipie(req: any, res: any) {
+async function modifyRecipie(modRecipie: recipie) {
 
-//     console.log('Connecting to DB')
-//     let db = await connectMongoRecipies()
-//     console.log('Connected to DB')
-//     console.log('Getting')
-//     const recipie = await Recipie.findOne(req.body, async (err: any, recipie: any) => {
-//         if (err) return;
-
-//         recipie.name = req.body.name;
-//         recipie.ingredients = req.body.ingredients;
-//         recipie.instructions = req.body.instructions;
-
-//         await recipie.save()
-//     })
-//     console.log('Got')
-//     db.connection.close()
-
-//     res.json({ recipie })
-// }
+    console.log('Connecting to DB')
+    const db = await connectMongoRecipies()
+    console.log('Connected to DB')
+    console.log('Getting')
+    const recipie = await Recipie.findByIdAndUpdate(modRecipie._id, modRecipie, { new: true })
+    console.log('Got')
+    db.connection.close()
+    return NextResponse.json(
+        { message: 'Recipie modified successfully', data: recipie },
+        { status: 201 }
+    )
+}
 
 // // DELETE: Remove
 // async function removeRecipie(req: any, res: any) {
