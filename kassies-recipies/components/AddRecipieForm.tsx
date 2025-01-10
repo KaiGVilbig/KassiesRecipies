@@ -29,15 +29,15 @@ import { AlertCircle } from 'lucide-react'
 import { z } from "zod"
 import { zodResolver } from '@hookform/resolvers/zod'
 import toGrams from './Converter'
+import { setAddRecipieIsOpen } from '@/redux/features/recipieListSlice'
 
 interface AddProps {
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
     conversions: Array<conversion>
 }
 
 const errMsgs: string[] = ["An error has occured on the server", "Too many errors occuring, try again later"]
 
-function AddRecipieForm({ setIsOpen, conversions } : AddProps) {
+function AddRecipieForm({ conversions } : AddProps) {
     const dispatch = useDispatch<AppDispatch>();
     const [error, setError] = useState<number>(0);
     const [forceRefresh, setForceRefresh] = useState<boolean>(false);
@@ -166,12 +166,12 @@ function AddRecipieForm({ setIsOpen, conversions } : AddProps) {
             if (res.status === 201) {
                 const data = await res.json();
                 dispatch(addRecipie(data.data));
-                setIsOpen(false);
+                setAddRecipieIsOpen(false);
             } else {
                 setError(error + 1);
                 if (error >= 2) {
                     setTimeout(() => {
-                        setIsOpen(false);
+                        setAddRecipieIsOpen(false);
                     }, 1000)
                 }
             }
@@ -355,7 +355,7 @@ function AddRecipieForm({ setIsOpen, conversions } : AddProps) {
                 }
                 <br />
                 <div className="flex justify-end items-center space-x-4">
-                    <Button type="button" variant="secondary" onClick={() => setIsOpen(false)}>Cancel</Button>
+                    <Button type="button" variant="secondary" onClick={() => setAddRecipieIsOpen(false)}>Cancel</Button>
                     <Button type="submit">Submit</Button>
                 </div>
             </form>

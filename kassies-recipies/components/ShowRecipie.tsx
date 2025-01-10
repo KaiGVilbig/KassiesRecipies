@@ -10,13 +10,12 @@ import { conversion } from '@/interfaces'
 
 interface RecipieProp {
     recipie: recipie,
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
     conversions: Array<conversion>
 }
 
 const multipliers: Array<number> = [.25, .33, .5, 1, 2, 3, 4, 5, 6]
 
-function ShowRecipie({ recipie, setIsOpen, conversions } : RecipieProp) {
+function ShowRecipie({ recipie, conversions } : RecipieProp) {
 
   const [ingMultiplier, setMultiplier] = useState<number>(1);
   const [modMode, setModMode] = useState<boolean>(false);
@@ -28,7 +27,7 @@ function ShowRecipie({ recipie, setIsOpen, conversions } : RecipieProp) {
 
   if (modMode) {
     return (
-      <ModifyRecipieForm recipie={recipieHere} setIsOpen={setIsOpen} conversions={conversions} setModMode={setModMode} setRecipie={setRecipie} />
+      <ModifyRecipieForm recipie={recipieHere} conversions={conversions} setModMode={setModMode} setRecipie={setRecipie} />
     )
   } else {
     return (

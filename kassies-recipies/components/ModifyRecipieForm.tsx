@@ -31,7 +31,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import toGrams from './Converter'
 
 interface AddProps {
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
     setModMode: React.Dispatch<React.SetStateAction<boolean>>,
     setRecipie: React.Dispatch<React.SetStateAction<recipie>>,
     recipie: recipie,

@@ -6,36 +6,42 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import { setRecipies, getRecipies } from '@/redux/features/recipieSlice';
 import { setConversions, getConversions } from '@/redux/features/conversionSlice';
-import { Button } from "@/components/ui/button"
-import { Input } from '@/components/ui/input'
+import { 
+    getSearchParam, 
+    getAddConversionIsOpen, 
+    getAddRecipieIsOpen, 
+    getIsRecipieOpen, 
+    setIsRecipieOpen 
+} from '@/redux/features/recipieListSlice';
 import Modal from './Modal';
 import AddRecipieForm from './AddRecipieForm'
 import ShowRecipie from './ShowRecipie';
 import AddConversion from './AddConversion';
 import style from '@/styles/List.module.css'
 import Image from 'next/image';
+import { WhichOpen } from './enums';
 
 function Recipies() {
     const dispatch = useDispatch<AppDispatch>();
     const recipies = useSelector(getRecipies);
     const conversions = useSelector(getConversions);
+    const search = useSelector(getSearchParam);
+    const isOpen = useSelector(getAddRecipieIsOpen);
+    const isConversionOpen = useSelector(getAddConversionIsOpen);
+    const isRecipieOpen = useSelector(getIsRecipieOpen);
 
     const [gotRecipies, setGotRecipies] = useState<boolean>(false);
     const [gotConversions, setGotConversions] = useState<boolean>(false);
-    const [isOpen, setIsOpen] = useState<boolean>(false);
     const [openRecipie, setOpenRecipie] = useState<recipie>(recipies[0]);
-    const [isRecipieOpen, setIsRecipieOpen] = useState<boolean>(false);
-    const [isConversionOpen, setIsConversionOpen] = useState<boolean>(false);
-    const [search, setSearch] = useState<string>("")
 
     const handleOpenRecipie = (r: recipie) => {
         setOpenRecipie(r);
-        setIsRecipieOpen(true);
+        dispatch(setIsRecipieOpen(true));
     }
 
-    const handleSearch = (value: string) => {
-        setSearch(value);
-    }
+    // const handleSearch = (value: string) => {
+    //     setSearch(value);
+    // }
 
     // Get the recipies and conversions from the database
     useEffect(() => {
@@ -83,19 +89,14 @@ function Recipies() {
                     </li>
                 ))}
             </div>
-            <div className="w-[10px] flex flex-col items-end space-y-4 mr-10">
-                <Input type="text" className="px-3 py-2 w-50" placeholder="Search..." onChange={(e) => handleSearch(e.target.value)} />
-                <Button onClick={() => setIsOpen(true)} variant="outline">Add Recipie</Button>
-                <Button onClick={() => setIsConversionOpen(true)} variant="outline">Add Conversion</Button>
-            </div>
-            <Modal title="Add a Recipie" isOpen={isOpen} setIsOpen={setIsOpen}>
-                <AddRecipieForm setIsOpen={setIsOpen} conversions={conversions} />
+            <Modal title="Add a Recipie" isOpen={isOpen} type={WhichOpen.add}>
+                <AddRecipieForm conversions={conversions} />
             </Modal>
-            <Modal title="Add a conversion" isOpen={isConversionOpen} setIsOpen={setIsConversionOpen}>
-                <AddConversion setIsOpen={setIsConversionOpen} />
+            <Modal title="Add a conversion" isOpen={isConversionOpen} type={WhichOpen.conv}>
+                <AddConversion />
             </Modal>
-            <Modal title={openRecipie?.name} isOpen={isRecipieOpen} setIsOpen={setIsRecipieOpen}>
-                <ShowRecipie recipie={openRecipie} setIsOpen={setIsOpen} conversions={conversions} />
+            <Modal title={openRecipie?.name} isOpen={isRecipieOpen} type={WhichOpen.show}>
+                <ShowRecipie recipie={openRecipie} conversions={conversions} />
             </Modal>
         </div>
     )

@@ -25,14 +25,11 @@ import { Input } from '@/components/ui/input'
 import { ArrowBigDown } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { conversion } from '@/interfaces';
-
-interface ConversionModal {
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
-}
+import { setAddConversionIsOpen } from '@/redux/features/recipieListSlice';
 
 // const errMsgs: string[] = ["An error has occured on the server", "Too many errors occuring, try again later"]
 
-function AddConversion({ setIsOpen } : ConversionModal) {
+function AddConversion() {
     const dispatch = useDispatch<AppDispatch>();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -70,12 +67,12 @@ function AddConversion({ setIsOpen } : ConversionModal) {
             if (res.status === 201) {
                 const data = await res.json();
                 dispatch(addConversion(data.data));
-                setIsOpen(false);
+                setAddConversionIsOpen(false);
             } else {
                 setError(error + 1);
                 if (error >= 2) {
                     setTimeout(() => {
-                        setIsOpen(false);
+                        setAddConversionIsOpen(false);
                     }, 1000)
                 }
             }
@@ -208,7 +205,7 @@ function AddConversion({ setIsOpen } : ConversionModal) {
                 </div>
                 <br />
                 <div className="flex justify-end items-center space-x-4">
-                    <Button type="button" variant="secondary" onClick={() => setIsOpen(false)}>Cancel</Button>
+                    <Button type="button" variant="secondary" onClick={() => setAddConversionIsOpen(false)}>Cancel</Button>
                     <Button type="submit">Submit</Button>
                 </div>
             </form>
