@@ -1,6 +1,9 @@
 # Use the official Node.js 22 image
 FROM node:22-slim
 
+# Install curl for healthchecks
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
 # Set the working directory inside the container
 WORKDIR /app
 

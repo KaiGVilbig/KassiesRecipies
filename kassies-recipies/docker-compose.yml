@@ -1,36 +1,18 @@
 version: "3.8"
 
 services:
-  mongodb:
-    image: mongo:6
-    container_name: mongodb
-    restart: unless-stopped
-    network_mode: host
-    volumes:
-      - /root/mongodb:/data/db
-    healthcheck:
-      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 30s
-    command: ["mongod", "--auth", "--bind_ip", "127.0.0.1"]
-
   kassiesrecipies:
     build: ./  # if building locally
-    image: ghcr.io/<your-username>/kassiesrecipies:latest  # for CI/CD
+    # image: ghcr.io/<your-username>/kassiesrecipies:latest  # for CI/CD
     container_name: kassiesrecipies
     restart: unless-stopped
     network_mode: host
-    depends_on:
-      mongodb:
-        condition: service_healthy
     environment:
       MONGO_URI: mongodb://admin:STRONG_PASSWORD_HERE@localhost:27017/mydatabase?authSource=admin
     volumes:
       - /home/kai/KassiesRecipies/uploads:/app/uploads
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
       interval: 30s
       timeout: 5s
       retries: 5
