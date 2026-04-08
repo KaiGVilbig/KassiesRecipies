@@ -132,8 +132,10 @@ This will start the app in production mode at `http://localhost:3000`.
 6. Run the app as a Docker container on the Raspberry Pi:
 
    ```bash
-   docker run --network host -p 3000:3000 kassiesrecipies:latest
+   docker run --network host -p 3000:3000 --restart always kassiesrecipies:latest
    ```
+
+   The `--restart always` will ensure that the container will start on boot/crash
 
 The app will be available at `http://localhost:3000` on your Raspberry Pi.
 
