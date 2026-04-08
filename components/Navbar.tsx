@@ -50,7 +50,7 @@ export default function Navbar() {
                 <NavigationMenu>
                     <NavigationMenuList>
                         <NavigationMenuItem>
-                            Kassie's Yummy Recipes
+                            Kassie's Yummy Yummy Recipes
                         </NavigationMenuItem>
                     </NavigationMenuList>
                 </NavigationMenu>
