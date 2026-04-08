@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Kassie's Recipies",
+  title: "Kassie's Recipes",
   description: "Recipies for Kassie Baking",
   icons: {icon: '/favicon.ico'}
 };
