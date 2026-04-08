@@ -15,4 +15,4 @@ jobs:
 
       - name: Deploy
         run: |
-          /home/kai/Sites/deploy.sh KassiesRecipies
+          cd ~/Sites && deploy.sh KassiesRecipies
