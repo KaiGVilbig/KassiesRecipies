@@ -41,6 +41,11 @@ Before you start, make sure you have the following installed on your system:
 
 3. Create a `.env.local` file in the root of the project and configure your environment variables (e.g., MongoDB connection string, etc.).
 
+## Testing
+```bash
+npm run test
+```
+
 ## Running the Development Server
 
 To run the app in development mode, use the following command:
