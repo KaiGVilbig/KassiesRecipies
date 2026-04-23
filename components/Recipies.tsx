@@ -32,12 +32,20 @@ function Recipies() {
 
     const [gotRecipies, setGotRecipies] = useState<boolean>(false);
     const [gotConversions, setGotConversions] = useState<boolean>(false);
-    const [openRecipie, setOpenRecipie] = useState<recipie>(recipies[0]);
+    const [openRecipie, setOpenRecipie] = useState<recipie | null>(null);
 
     const handleOpenRecipie = (r: recipie) => {
         setOpenRecipie(r);
         dispatch(setIsRecipieOpen(true));
     }
+
+    useEffect(() => {
+        if (!openRecipie || !gotRecipies) return;
+        if (!recipies.find(r => r._id === openRecipie._id)) {
+            dispatch(setIsRecipieOpen(false));
+            setOpenRecipie(null);
+        }
+    }, [recipies, openRecipie, gotRecipies, dispatch])
 
     // const handleSearch = (value: string) => {
     //     setSearch(value);
@@ -95,9 +103,11 @@ function Recipies() {
             <Modal title="Add a conversion" isOpen={isConversionOpen} type={WhichOpen.conv}>
                 <AddConversion />
             </Modal>
-            <Modal title={openRecipie?.name} isOpen={isRecipieOpen} type={WhichOpen.show}>
-                <ShowRecipie recipie={openRecipie} conversions={conversions} />
-            </Modal>
+            {openRecipie && (
+                <Modal title={openRecipie.name} isOpen={isRecipieOpen} type={WhichOpen.show}>
+                    <ShowRecipie recipie={openRecipie} conversions={conversions} />
+                </Modal>
+            )}
         </div>
     )
 }

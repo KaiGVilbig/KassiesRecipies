@@ -16,32 +16,54 @@ export const config = {
 
 export async function POST(req: NextRequest) {
     try {
-        const data = await req.formData();
-        const file: File | null = data.get('image') as unknown as File
-        const action = data.get('action') as unknown as string
-        const recipie = data.get('recipie') as unknown as string
-        const oldImage = data.get('oldImageLocaltion') as unknown as string
-        console.log('got fields')
-        if (!action || !recipie) {
-            return NextResponse.json({ error: 'Missing action or recipie data' }, { status: 500 })
-        }
-        if (file) {
-            const bytes = await file.arrayBuffer();
-            const buffer = Buffer.from(bytes);
-            const path = `${uploadDir}/${JSON.parse(recipie).image}`;
-            await writeFile(path, buffer);
-            console.log(oldImage)
-            if (oldImage) {
-                const path = `${uploadDir}/${oldImage}`;
-                await unlink(path);
+        const contentType = req.headers.get('content-type')
+        let data: any
+        
+        if (contentType && contentType.includes('multipart/form-data')) {
+            const formData = await req.formData();
+            const file: File | null = formData.get('image') as unknown as File
+            const action = formData.get('action') as unknown as string
+            const recipie = formData.get('recipie') as unknown as string
+            const oldImage = formData.get('oldImageLocaltion') as unknown as string
+            
+            if (!action || !recipie) {
+                return NextResponse.json({ error: 'Missing action or recipie data' }, { status: 500 })
+            }
+            
+            if (file) {
+                const bytes = await file.arrayBuffer();
+                const buffer = Buffer.from(bytes);
+                const path = `${uploadDir}/${JSON.parse(recipie).image}`;
+                await writeFile(path, buffer);
+                console.log(oldImage)
+                if (oldImage) {
+                    const path = `${uploadDir}/${oldImage}`;
+                    await unlink(path);
+                }
+            }
+            
+            switch (action) {
+                case 'add':
+                    return await addRecipie(JSON.parse(recipie));
+                case 'modify':
+                    return await modifyRecipie(JSON.parse(recipie) as recipie);
+            }
+        } else {
+            data = await req.json();
+            const action = data.action
+            const recipie = data.id
+            
+            if (!action || !recipie) {
+                return NextResponse.json({ error: 'Missing action or id data' }, { status: 500 })
+            }
+            
+            switch (action) {
+                case 'delete':
+                    return await deleteRecipie(recipie);
             }
         }
-        switch (action) {
-            case 'add':
-                return await addRecipie(JSON.parse(recipie));
-            case 'modify':
-                return await modifyRecipie(JSON.parse(recipie) as recipie);
-        }
+        
+        return NextResponse.json({ error: 'Unknown request format' }, { status: 400 })
     } catch (err) {
         return NextResponse.json({ error: `Failed to process the request: ${err}` }, { status: 500 })
     }
@@ -101,16 +123,19 @@ async function modifyRecipie(modRecipie: recipie) {
     )
 }
 
-// // DELETE: Remove
-// async function removeRecipie(req: any, res: any) {
+// DELETE: Remove
+async function deleteRecipie(recipieId: string) {
+    console.log('Connecting to DB')
+    const db = await connectMongoRecipies()
+    console.log('Connected to DB')
+    console.log('Removing')
+    const recipie = await Recipie.findByIdAndDelete(recipieId)
+    console.log('Removed')
+    db.connection.close()
 
-//     console.log('Connecting to DB')
-//     let db = await connectMongoRecipies()
-//     console.log('Connected to DB')
-//     console.log('Removing')
-//     // const recipie = await Recipie.remove({ _id: req.body.id })
-//     console.log('Removed')
-//     db.connection.close()
+    if (!recipie) {
+        return NextResponse.json({ error: 'Recipe not found' }, { status: 404 })
+    }
 
-//     // res.json({ recipie })
-// }
+    return NextResponse.json({ message: 'Recipe deleted successfully', data: recipie })
+}

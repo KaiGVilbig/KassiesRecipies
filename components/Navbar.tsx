@@ -1,10 +1,10 @@
 "use client"
+import React, { useState, useEffect } from "react"
 import {
     NavigationMenu,
     NavigationMenuItem,
     NavigationMenuList,
 } from "@/components/ui/navigation-menu"
-import { useState, useEffect } from "react"
 import { Button } from "./ui/button";
 import { Moon, Sun } from "lucide-react";
 import { Input } from "./ui/input";

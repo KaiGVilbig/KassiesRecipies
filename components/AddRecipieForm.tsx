@@ -135,6 +135,16 @@ function AddRecipieForm({ conversions } : AddProps) {
         setForceRefresh(!forceRefresh);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+ const handleBlur = (_e: React.FocusEvent<HTMLInputElement>) => {
+        const nameField = form.getValues('name');
+        if (!nameField?.trim()) {
+            form.setError('name', { message: 'Please enter a name' });
+        } else {
+            form.clearErrors('name');
+        }
+    };
+
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         // Convert from zod recipie object to recipie interface
         const instructs: string[] = values.instructions.map((ins: z.infer<typeof instructions>) => ins.value);
@@ -186,20 +196,20 @@ function AddRecipieForm({ conversions } : AddProps) {
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit, onError)}>
                 <FormField 
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Da Yummy's Name</FormLabel>
-                            <FormControl>
-                                <Input placeholder="" {...field} />
-                            </FormControl>
-                            {form.formState.errors.name && (
-                                <p className="mt-1 text-sm text-red-500">{form.formState.errors.name.message}</p>
-                            )}
-                        </FormItem>
-                    )}
-                /><br />
+                     control={form.control}
+                     name="name"
+                     render={({ field }) => (
+                         <FormItem>
+                             <FormLabel>Da Yummy's Name</FormLabel>
+                             <FormControl>
+                                 <Input placeholder="" {...field} onBlur={handleBlur} aria-invalid={!!form.formState.errors?.name} />
+                             </FormControl>
+                             {form.formState.errors?.name?.message && (
+                                 <p className="mt-1 text-sm text-red-500">{form.formState.errors.name.message}</p>
+                             )}
+                         </FormItem>
+                     )}
+                 /><br />
                 <div className="flex items-center space-x-4">
                     <FormField 
                         control={form.control}

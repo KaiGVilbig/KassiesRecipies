@@ -4,7 +4,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
-import { ReactNode } from "react"
+import React, { ReactNode } from "react"
 import { WhichOpen } from "./enums"
 import { setAddConversionIsOpen, setAddRecipieIsOpen, setIsRecipieOpen } from "@/redux/features/recipieListSlice"
 import { useDispatch } from 'react-redux';

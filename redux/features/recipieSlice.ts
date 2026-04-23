@@ -35,10 +35,16 @@ export const recipies = createSlice({
             if (index !== -1) { 
                 state.value.recipies[index] = action.payload
             }
+        },
+        deleteRecipie: (state, action: PayloadAction<string>) => {
+            const index = state.value.recipies.findIndex((r) => r._id === action.payload)
+            if (index !== -1) {
+                state.value.recipies.splice(index, 1)
+            }
         }
     }
 })
 export const getRecipies = (state: RootState) => state.recipieReducer.value.recipies;
 
-export const { setRecipies, addRecipie, modifyRecipie } = recipies.actions;
+export const { setRecipies, addRecipie, modifyRecipie, deleteRecipie } = recipies.actions;
 export default recipies.reducer;
