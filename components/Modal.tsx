@@ -35,14 +35,14 @@ export default function Modal( { title, children, isOpen, type }: ModalProps) {
         }
     }
 
-    return (
-        <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-            <DialogContent className="sm:max-w-md overflow-y-scroll max-h-[90vh]" onInteractOutside={(e) => e.preventDefault()}>
-            <DialogHeader>
-                <DialogTitle>{title}</DialogTitle>
-                {children}
-            </DialogHeader>
-            </DialogContent>
-        </Dialog>
-    )
+      return (
+            <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+                <DialogContent className="sm:max-w-md overflow-y-scroll max-h-[90vh]" onInteractOutside={(e) => e.preventDefault()}>
+                    <DialogHeader>
+                        <DialogTitle>{title}</DialogTitle>
+                    </DialogHeader>
+                    {children}
+                </DialogContent>
+            </Dialog>
+        )
 }

@@ -360,8 +360,8 @@ function AddRecipieForm({ conversions, setModMode, recipie, setRecipie } : AddPr
                 }
                 <br />
                 <div className="flex justify-end items-center space-x-4">
-                    <Button type="button" variant="secondary" onClick={() => setModMode(false)}>Cancel</Button>
-                    <Button type="submit">Submit</Button>
+                    <Button type="button" variant="secondary" className="form-cancel-btn" onClick={() => setModMode(false)}>Cancel</Button>
+                     <Button type="submit" className="form-submit-btn">Submit</Button>
                 </div>
             </form>
         </Form>

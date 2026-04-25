@@ -44,28 +44,30 @@ export default function Navbar() {
         }
     }
 
-    return (
-        <nav className="w-full h-auto p-2">
+     return (
+        <nav className="w-full h-auto p-4">
             <div className="flex justify-between items-center">
                 <NavigationMenu>
                     <NavigationMenuList>
                         <NavigationMenuItem>
-                            Kassie's Yummy Recipes
+                            <div className="text-2xl font-bold bg-gradient-to-r from-[#FF6B6B] via-[#FF8E53] to-[#FFD93D] bg-clip-text text-transparent">
+                                Kassie's Recipes
+                            </div>
                         </NavigationMenuItem>
                     </NavigationMenuList>
                 </NavigationMenu>
                 <div className="ml-auto flex justify-between">
-                    <Input type="text" className="px-3 py-2 w-50" placeholder="Search..." onChange={(e) => dispatch(setSearchParam(e.target.value))} />
-                    <Button variant="outline" onClick={() => setIsOpen(!isOpen)}>
+                    <Input type="text" className="px-4 py-3 w-60 search-input" placeholder="Search recipes..." onChange={(e) => dispatch(setSearchParam(e.target.value))} />
+                    <Button variant="outline" onClick={() => setIsOpen(!isOpen)} className="navbar-button">
                         <Menu />
                     </Button>
                 </div>
             </div>
             {isOpen &&
-                <div className="ml-auto flex justify-end mt-1">
-                    <Button onClick={() => dispatch(setAddRecipieIsOpen(true))} variant="outline">Add Recipie</Button>
-                    <Button onClick={() => dispatch(setAddConversionIsOpen(true))} variant="outline">Add Conversion</Button>
-                    <Button onClick={toggleTheme} className="p-2 bg-gray-200 dark:bg-gray-700 rounded-lg" variant="outline">
+                <div className="ml-auto flex justify-end gap-2 navbar-dropdown">
+                    <Button onClick={() => dispatch(setAddRecipieIsOpen(true))} className="btn-primary navbar-action-button">Add Recipe</Button>
+                     <Button onClick={() => dispatch(setAddConversionIsOpen(true))} className="btn-secondary navbar-action-button">Add Conversion</Button>
+                    <Button onClick={toggleTheme} className="theme-toggle" variant="outline">
                         {isDarkMode ? <Sun /> : <Moon />}
                     </Button>
                 </div>
