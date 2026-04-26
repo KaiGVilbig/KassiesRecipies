@@ -65,7 +65,7 @@ export default function Navbar() {
                 </div>
             </div>
             {isOpen &&
-                <div className="ml-auto flex justify-end gap-2 navbar-dropdown">
+                <div className="ml-auto flex justify-end gap-2 navbar-dropdown mt-[.5em]">
                     <Button onClick={() => dispatch(setAddRecipieIsOpen(true))} className="btn-primary navbar-action-button">Add Recipe</Button>
                      <Button onClick={() => dispatch(setAddConversionIsOpen(true))} className="btn-secondary navbar-action-button">Add Conversion</Button>
                     <Button onClick={toggleTheme} className="theme-toggle" variant="outline">

@@ -819,7 +819,7 @@ form button[variant="secondary"]:hover {
   padding: 8px;
   font-size: 1.1rem;
   transition: all 0.3s ease;
-  border-radius: 8px;
+  /* border-radius: 8px; */
   background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
   color: white;
 }
@@ -839,9 +839,7 @@ form button[variant="secondary"]:hover {
 
 .form-cancel-btn {
   background: rgba(100, 116, 139, 0.2);
-  color: #e5e7eb;
   transition: all 0.3s ease;
-  border: 2px solid rgba(100, 116, 139, 0.3);
 }
 
 .form-cancel-btn:hover {

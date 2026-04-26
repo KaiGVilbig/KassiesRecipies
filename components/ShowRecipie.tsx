@@ -69,9 +69,9 @@ if (modMode) {
                       <SelectItem value={mult.toString()} key={index}>{mult === .25 ? '1/4' : mult === .33 ? '1/3' : mult === .5 ? '1/2' : mult}</SelectItem>
                   ))}
               </SelectContent>
-            </Select>
+            </Select>&nbsp;&nbsp;
             <div className="flex gap-2">
-               <Button variant="outline" className="action-btn ml-auto" onClick={handleModify} aria-label="modify recipe">
+               <Button className="action-btn ml-auto" onClick={handleModify} aria-label="modify recipe">
                   <PencilLine />
                 </Button>
                 <Button variant="destructive" className="action-btn ml-auto" onClick={handleDelete} aria-label="delete recipe">
