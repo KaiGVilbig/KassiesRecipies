@@ -50,63 +50,63 @@ if (modMode) {
     )
   }
 
-    return (
-     <>
-       <div>
-         <br />
-         <div className="relative">
-           {recipieHere.image !== "" && <Image width={0} height={0} sizes='100vh' src={`/api/uploads/${recipieHere.image}`} alt={recipieHere.image} className={style.image} />}
-         </div>
-         <br />
-         <div className="flex justify-start items-start">
-           <p className="pr-5">Batch size: </p>
-           <Select onValueChange={(e) => setMultiplier(Number(e))}>
-             <SelectTrigger className="w-[180px]">
-               <SelectValue placeholder={1} />
-             </SelectTrigger>
-             <SelectContent>
-                 {Object.values(multipliers).map((mult, index) => (
-                     <SelectItem value={mult.toString()} key={index}>{mult === .25 ? '1/4' : mult === .33 ? '1/3' : mult === .5 ? '1/2' : mult}</SelectItem>
-                 ))}
-             </SelectContent>
-           </Select>
-           <div className="flex gap-2">
-              <Button variant="outline" className="ml-auto" onClick={handleModify} aria-label="modify recipe">
-                <PencilLine />
-              </Button>
-              <Button variant="destructive" className="ml-auto" onClick={handleDelete} aria-label="delete recipe">
-                <Trash2 />
-              </Button>
-            </div>
-         </div><br />
-         <p>Servings: {recipieHere.servings * ingMultiplier}</p>
-         <p>Calories per serving: {recipieHere.cals}</p><br />
-         <h1>Ingredients:</h1>
-         {recipieHere.ingredients.map((i) => (
-             <p key={i.name}>{i.name} - {i.value * ingMultiplier} {i.type}</p>
-         ))}
-         <br />
-         <h1>Steps:</h1>
-         {recipieHere.instructions.map((i, j) => (
-             <p key={j} className="mb-2">{j + 1}: {i}</p>
-         ))}
-       </div>
-       <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-         <DialogContent>
-           <DialogHeader>
-             <DialogTitle>Delete Recipe</DialogTitle>
-             <DialogDescription>
-               Are you sure you want to delete "{recipieHere.name}"? This action cannot be undone.
-             </DialogDescription>
-           </DialogHeader>
-           <DialogFooter>
-             <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>Cancel</Button>
-             <Button variant="destructive" onClick={confirmDelete}>Delete</Button>
-           </DialogFooter>
-         </DialogContent>
-       </Dialog>
-     </>
-   )
+      return (
+      <>
+        <div>
+          <br />
+          <div className="relative">
+            {recipieHere.image !== "" && <Image width={0} height={0} sizes='100vh' src={`/api/uploads/${recipieHere.image}`} alt={recipieHere.image} className={style.image} />}
+          </div>
+          <br />
+          <div className="flex justify-start items-start">
+            <p className="pr-5">Batch size: </p>
+            <Select onValueChange={(e) => setMultiplier(Number(e))}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder={1} />
+              </SelectTrigger>
+              <SelectContent>
+                  {Object.values(multipliers).map((mult, index) => (
+                      <SelectItem value={mult.toString()} key={index}>{mult === .25 ? '1/4' : mult === .33 ? '1/3' : mult === .5 ? '1/2' : mult}</SelectItem>
+                  ))}
+              </SelectContent>
+            </Select>&nbsp;&nbsp;
+            <div className="flex gap-2">
+               <Button className="action-btn ml-auto" onClick={handleModify} aria-label="modify recipe">
+                  <PencilLine />
+                </Button>
+                <Button variant="destructive" className="action-btn ml-auto" onClick={handleDelete} aria-label="delete recipe">
+                  <Trash2 />
+                </Button>
+             </div>
+          </div><br />
+          <p>Servings: {recipieHere.servings * ingMultiplier}</p>
+          <p>Calories per serving: {recipieHere.cals}</p><br />
+          <h1>Ingredients:</h1>
+          {recipieHere.ingredients.map((i) => (
+              <p key={i.name}>{i.name} - {i.value * ingMultiplier} {i.type}</p>
+          ))}
+          <br />
+          <h1>Steps:</h1>
+          {recipieHere.instructions.map((i, j) => (
+              <p key={j} className="mb-2">{j + 1}: {i}</p>
+          ))}
+        </div>
+        <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Delete Recipe</DialogTitle>
+              <DialogDescription>
+                Are you sure you want to delete "{recipieHere.name}"? This action cannot be undone.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+               <Button variant="outline" className="form-cancel-btn" onClick={() => setShowDeleteDialog(false)}>Cancel</Button>
+               <Button variant="destructive" className="btn-primary" onClick={confirmDelete}>Delete</Button>
+             </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </>
+    )
 }
 
 export default ShowRecipie

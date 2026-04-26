@@ -23,31 +23,43 @@ export async function POST(req: NextRequest) {
             const formData = await req.formData();
             const file: File | null = formData.get('image') as unknown as File
             const action = formData.get('action') as unknown as string
-            const recipie = formData.get('recipie') as unknown as string
+            const recipieRaw = formData.get('recipie') as unknown as string
             const oldImage = formData.get('oldImageLocaltion') as unknown as string
+            const recipie = recipieRaw ? recipieRaw : '{}'
+            
+            console.log('action:', action, 'recipie:', recipie, 'file:', file)
             
             if (!action || !recipie) {
                 return NextResponse.json({ error: 'Missing action or recipie data' }, { status: 500 })
             }
             
-            if (file) {
-                const bytes = await file.arrayBuffer();
-                const buffer = Buffer.from(bytes);
-                const path = `${uploadDir}/${JSON.parse(recipie).image}`;
-                await writeFile(path, buffer);
-                console.log(oldImage)
-                if (oldImage) {
-                    const path = `${uploadDir}/${oldImage}`;
-                    await unlink(path);
-                }
-            }
+           if (file) {
+                  console.log('Processing file upload')
+                  const bytes = await file.arrayBuffer();
+                  const buffer = Buffer.from(bytes);
+                  const recipieObj = JSON.parse(recipie);
+                  console.log('recipe object:', recipieObj);
+                  const imagePath = `${uploadDir}/${recipieObj.image}`;
+                  console.log('image path:', imagePath);
+                  await writeFile(imagePath, buffer);
+                  console.log(oldImage)
+                  if (oldImage) {
+                      const oldImagePath = `${uploadDir}/${oldImage}`;
+                      await unlink(oldImagePath);
+                  }
+                  console.log('File upload complete')
+              }
             
             switch (action) {
-                case 'add':
-                    return await addRecipie(JSON.parse(recipie));
-                case 'modify':
-                    return await modifyRecipie(JSON.parse(recipie) as recipie);
-            }
+                 case 'add':
+                     console.log('Adding recipe')
+                     return await addRecipie(JSON.parse(recipie));
+                 case 'modify':
+                     console.log('Modifying recipe')
+                     return await modifyRecipie(JSON.parse(recipie) as recipie);
+                 default:
+                     return NextResponse.json({ error: 'Unknown action' }, { status: 400 })
+             }
         } else {
             data = await req.json();
             const action = data.action

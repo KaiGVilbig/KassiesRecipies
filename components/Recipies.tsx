@@ -86,30 +86,30 @@ function Recipies() {
         getRecipies();
     }, [gotRecipies, gotConversions, dispatch])
 
-    return (
-        <div className="flex justify-center items-start h-screen p-4">
-            <div className='w-[10px]'></div>
-            <div className={style.container}>
-                {recipies.filter(r => r.name.includes(search)).map((recipie) => (
-                    <li key={recipie._id} className={`${style.list} flex justify-start items-start`} onClick={() => handleOpenRecipie(recipie)}>
-                        {recipie.image !== "" && <Image width={0} height={0} sizes='100vh' src={`/api/uploads/${recipie.image}`} alt={recipie.image} className={style.image} />}
-                        &nbsp;{recipie.name}
-                    </li>
-                ))}
-            </div>
-            <Modal title="Add a Recipie" isOpen={isOpen} type={WhichOpen.add}>
-                <AddRecipieForm conversions={conversions} />
-            </Modal>
-            <Modal title="Add a conversion" isOpen={isConversionOpen} type={WhichOpen.conv}>
-                <AddConversion />
-            </Modal>
-            {openRecipie && (
-                <Modal title={openRecipie.name} isOpen={isRecipieOpen} type={WhichOpen.show}>
-                    <ShowRecipie recipie={openRecipie} conversions={conversions} />
+       return (
+            <div className="flex justify-center items-start h-screen p-4">
+                <div className='w-[10px]'></div>
+                <div className={`${style.container} backdrop-blur-lg`}>
+                     {recipies.filter(r => r.name.includes(search)).map((recipie) => (
+                         <li key={recipie._id} className={`${style.list} flex justify-start items-start`} onClick={() => handleOpenRecipie(recipie)}>
+                             {recipie.image !== "" && <Image width={64} height={64} sizes='64px' src={`/api/uploads/${recipie.image}`} alt={recipie.image} className={style.image} />}
+                             <span className={style.recipeName}>{recipie.name}</span>
+                         </li>
+                     ))}
+                 </div>
+                 <Modal title="Add a Recipe" isOpen={isOpen} type={WhichOpen.add}>
+                     <AddRecipieForm conversions={conversions} />
+                 </Modal>
+                 <Modal title="Add a conversion" isOpen={isConversionOpen} type={WhichOpen.conv}>
+                    <AddConversion />
                 </Modal>
-            )}
-        </div>
-    )
+                {openRecipie && (
+                    <Modal title={openRecipie.name} isOpen={isRecipieOpen} type={WhichOpen.show}>
+                        <ShowRecipie recipie={openRecipie} conversions={conversions} />
+                    </Modal>
+                )}
+            </div>
+        )
 }
 
 export default Recipies

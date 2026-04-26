@@ -205,7 +205,7 @@ function AddConversion() {
                 </div>
                 <br />
                 <div className="flex justify-end items-center space-x-4">
-                    <Button type="button" variant="secondary" onClick={() => setAddConversionIsOpen(false)}>Cancel</Button>
+                    <Button type="button" variant="secondary" onPointerDown={(e) => e.preventDefault()} onClick={() => dispatch(setAddConversionIsOpen(false))}>Cancel</Button>
                     <Button type="submit">Submit</Button>
                 </div>
             </form>

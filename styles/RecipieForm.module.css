@@ -1,33 +1,312 @@
+/* Form Container */
+.form-container {
+  @apply bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8;
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+html:global(.dark) .form-container {
+  background: rgba(30, 41, 59, 0.95);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+/* Ingredient Item */
 .ingredient {
-    border: solid 2px rgba(211, 211, 211, 0.5);
-    border-radius: 1em;
-    padding: 1px;
-    margin-bottom: 10px;
+  @apply bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 mb-4;
+  background: linear-gradient(135deg, rgba(249, 250, 251, 0.5), rgba(243, 244, 246, 0.5));
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  /* border-left: 4px solid #a855f7; */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
 }
 
+html:global(.dark) .ingredient {
+  background: rgba(55, 65, 81, 0.4);
+}
+
+/* Instruction Item */
 .instruction {
-    border: solid 2px rgba(211, 211, 211, 0.5);
-    border-radius: 1em;
-    padding: 1px;
-    margin-bottom: 10px;
+  @apply bg-purple-50 dark:bg-purple-900/20 rounded-xl p-4 mb-4;
+  background: linear-gradient(135deg, rgba(243, 244, 246, 0.4), rgba(228, 231, 249, 0.4));
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  position: relative;
+  animation: slideIn 0.3s ease;
 }
 
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+html:global(.dark) .instruction {
+  background: rgba(55, 65, 81, 0.4);
+}
+
+/* Remove Button */
 .remove {
-    background-color: red;
-    border-radius: 50%;
-    float: right;
-    width: 30px;
-    height: 30px;
-    margin-top: 10px;
-    margin-right: 10px;
+  @apply bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 transition-colors duration-200 shadow-md;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  border-radius: 10px;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  margin-right: 12px;
+  margin-top: 4px;
+  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+  font-weight: 600;
+  font-size: 16px;
 }
 
+.remove:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 15px rgba(239, 68, 68, 0.4);
+}
+
+/* Specification Container */
 .spec {
-    padding: 30px;
+  @apply flex flex-wrap items-center gap-3 ml-12;
+  margin-left: 32px;
+  margin-top: 8px;
 }
 
+/* Label */
 .label {
-    display: inline-block;
-    width: 85%;
-    margin: 5px;
+  @apply block text-sm font-medium text-gray-700 dark:text-gray-300;
+  color: #374151;
+  font-weight: 500;
+}
+
+html:global(.dark) .label {
+  color: #e5e7eb;
+}
+
+/* Form Field */
+.form-field {
+  @apply transition-all duration-200;
+}
+
+/* Convert Button */
+.convert-btn {
+  @apply bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-all duration-200;
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  color: #4f46e5;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.convert-btn:hover {
+  background: rgba(99, 102, 241, 0.15);
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+/* Add Button */
+.add-btn {
+  @apply bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105;
+  background: linear-gradient(135deg, #a855f7, #6366f1);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+  transition: all 0.3s ease;
+}
+
+.add-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(168, 85, 247, 0.5);
+}
+
+/* Section Header */
+.section-header {
+  @apply text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4;
+  color: #1f2937;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+html:global(.dark) .section-header {
+  color: #f9fafb;
+}
+
+/* Form Title */
+.form-title {
+  @apply text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent mb-6;
+  background: linear-gradient(135deg, #a855f7, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* Submit Button */
+.submit-btn {
+  @apply bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105;
+  background: linear-gradient(135deg, #a855f7, #6366f1);
+  color: white;
+  padding: 12px 32px;
+  border-radius: 12px;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+  transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(168, 85, 247, 0.5);
+}
+
+/* Cancel Button */
+.cancel-btn {
+  @apply bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-6 py-3 rounded-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-200;
+  background: rgba(156, 163, 175, 0.1);
+  color: #6b7280;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+html:global(.dark) .cancel-btn {
+  background: rgba(55, 65, 81, 0.3);
+  color: #d1d5db;
+}
+
+.cancel-btn:hover {
+  background: rgba(156, 163, 175, 0.15);
+}
+
+/* Input Fields */
+.form-input {
+  @apply w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-800 transition-all duration-200;
+  border: 2px solid rgba(229, 231, 235, 0.2);
+  background: white;
+  padding: 12px 16px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #a855f7;
+  box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.1);
+}
+
+html:global(.dark) .form-input {
+  background: rgba(30, 41, 59, 0.8);
+  border: 2px solid rgba(55, 65, 81, 0.3);
+}
+
+/* Textarea */
+.form-textarea {
+  @apply w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-800 transition-all duration-200 resize-none;
+  border: 2px solid rgba(229, 231, 235, 0.2);
+  background: white;
+  padding: 12px 16px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.form-textarea:focus {
+  outline: none;
+  border-color: #a855f7;
+  box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.1);
+}
+
+/* Form Label */
+.form-label {
+  @apply block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2;
+  color: #374151;
+  font-weight: 500;
+}
+
+html:global(.dark) .form-label {
+  color: #e5e7eb;
+}
+
+/* Error Message */
+.error-message {
+  @apply text-sm text-red-500 mt-1 ml-1;
+  color: #ef4444;
+  font-size: 0.875rem;
+}
+
+/* Form Item */
+.form-item {
+  @apply mb-4;
+}
+
+/* Select */
+.form-select {
+  @apply w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-800 transition-all duration-200 appearance-none cursor-pointer;
+  border: 2px solid rgba(229, 231, 235, 0.2);
+  background: white;
+  padding: 12px 16px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.form-select:focus {
+  outline: none;
+  border-color: #a855f7;
+  box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.1);
+}
+
+html:global(.dark) .form-select {
+  background: rgba(30, 41, 59, 0.8);
+  border: 2px solid rgba(55, 65, 81, 0.3);
+}
+
+/* Alert */
+.alert {
+  @apply bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4 mb-4;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  padding: 12px 16px;
+  border-radius: 12px;
+}
+
+html:global(.dark) .alert {
+  background: rgba(127, 29, 31, 0.2);
+  border: 1px solid rgba(127, 29, 31, 0.3);
+}
+
+/* Servings and Calories Row */
+.servings-row {
+  @apply flex gap-4 mt-4;
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+/* Number Input */
+.number-input {
+  @apply w-20 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700;
+  width: 80px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(229, 231, 235, 0.3);
+  background: white;
+}
+
+html:global(.dark) .number-input {
+  border: 1px solid rgba(75, 85, 99, 0.4);
+  background: rgba(55, 65, 81, 0.8);
 }
