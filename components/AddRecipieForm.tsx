@@ -176,12 +176,12 @@ function AddRecipieForm({ conversions } : AddProps) {
             if (res.status === 201) {
                 const data = await res.json();
                 dispatch(addRecipie(data.data));
-                setAddRecipieIsOpen(false);
+                dispatch(setAddRecipieIsOpen(false));
             } else {
                 setError(error + 1);
                 if (error >= 2) {
                     setTimeout(() => {
-                        setAddRecipieIsOpen(false);
+                        dispatch(setAddRecipieIsOpen(false));
                     }, 1000)
                 }
             }
@@ -365,7 +365,7 @@ function AddRecipieForm({ conversions } : AddProps) {
                   }
                   <br />
                   <div className="flex justify-end items-center space-x-4">
-                      <Button type="button" variant="secondary" className="form-cancel-btn" onClick={() => setAddRecipieIsOpen(false)}>Cancel</Button>
+                      <Button type="button" variant="secondary" className="form-cancel-btn" onPointerDown={(e) => e.preventDefault()} onClick={() => dispatch(setAddRecipieIsOpen(false))}>Cancel</Button>
                        <Button type="submit" className="form-submit-btn">Submit</Button>
                   </div>
               </form>

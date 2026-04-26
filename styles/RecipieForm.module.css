@@ -6,7 +6,7 @@
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
 }
 
-.dark .form-container {
+html:global(.dark) .form-container {
   background: rgba(30, 41, 59, 0.95);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
 }
@@ -28,7 +28,7 @@
   box-shadow: 0 6px 16px rgba(168, 85, 247, 0.15);
 }
 
-.dark .ingredient {
+html:global(.dark) .ingredient {
   background: rgba(55, 65, 81, 0.4);
 }
 
@@ -75,7 +75,7 @@
   }
 }
 
-.dark .instruction {
+html:global(.dark) .instruction {
   background: rgba(115, 67, 162, 0.15);
 }
 
@@ -113,7 +113,7 @@
   font-weight: 500;
 }
 
-.dark .label {
+html:global(.dark) .label {
   color: #e5e7eb;
 }
 
@@ -165,7 +165,7 @@
   font-weight: 600;
 }
 
-.dark .section-header {
+html:global(.dark) .section-header {
   color: #f9fafb;
 }
 
@@ -209,7 +209,7 @@
   transition: all 0.3s ease;
 }
 
-.dark .cancel-btn {
+html:global(.dark) .cancel-btn {
   background: rgba(55, 65, 81, 0.3);
   color: #d1d5db;
 }
@@ -234,7 +234,7 @@
   box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.1);
 }
 
-.dark .form-input {
+html:global(.dark) .form-input {
   background: rgba(30, 41, 59, 0.8);
   border: 2px solid rgba(55, 65, 81, 0.3);
 }
@@ -262,7 +262,7 @@
   font-weight: 500;
 }
 
-.dark .form-label {
+html:global(.dark) .form-label {
   color: #e5e7eb;
 }
 
@@ -294,7 +294,7 @@
   box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.1);
 }
 
-.dark .form-select {
+html:global(.dark) .form-select {
   background: rgba(30, 41, 59, 0.8);
   border: 2px solid rgba(55, 65, 81, 0.3);
 }
@@ -308,7 +308,7 @@
   border-radius: 12px;
 }
 
-.dark .alert {
+html:global(.dark) .alert {
   background: rgba(127, 29, 31, 0.2);
   border: 1px solid rgba(127, 29, 31, 0.3);
 }
@@ -331,7 +331,7 @@
   background: white;
 }
 
-.dark .number-input {
+html:global(.dark) .number-input {
   border: 1px solid rgba(75, 85, 99, 0.4);
   background: rgba(55, 65, 81, 0.8);
 }

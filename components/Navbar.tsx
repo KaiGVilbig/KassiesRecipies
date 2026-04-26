@@ -49,8 +49,9 @@ export default function Navbar() {
             <div className="flex justify-between items-center">
                 <NavigationMenu>
                     <NavigationMenuList>
-                        <NavigationMenuItem>
-                            <div className="text-2xl font-bold bg-gradient-to-r from-[#FF6B6B] via-[#FF8E53] to-[#FFD93D] bg-clip-text text-transparent">
+                      <NavigationMenuItem>
+                            <div className="text-2xl font-bold bg-gradient-to-r from-orange-400 via-orange-500 to-yellow-400 bg-clip-text text-transparent
+                                            dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400">
                                 Kassie's Recipes
                             </div>
                         </NavigationMenuItem>
