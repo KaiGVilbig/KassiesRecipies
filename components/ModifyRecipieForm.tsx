@@ -1,5 +1,6 @@
 "use client"
 import React, { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { conversion, ingredient, recipie } from '@/interfaces'
 import style from '@/styles/RecipieForm.module.css'
 import { modifyRecipie } from '@/redux/features/recipieSlice'
@@ -38,6 +39,12 @@ interface AddProps {
 }
 
 const errMsgs: string[] = ["An error has occured on the server", "Too many errors occuring, try again later"]
+
+const rowVariants = {
+    hidden: { opacity: 0, x: -8 },
+    show: { opacity: 1, x: 0, transition: { duration: 0.2 } },
+    exit: { opacity: 0, x: 8, transition: { duration: 0.15 } }
+}
 
 function AddRecipieForm({ conversions, setModMode, recipie, setRecipie } : AddProps) {
     const dispatch = useDispatch<AppDispatch>();
@@ -234,8 +241,9 @@ function AddRecipieForm({ conversions, setModMode, recipie, setRecipie } : AddPr
                                 <h3 className="text-lg font-medium">Ingredients</h3>
                                 <Button type="button" onClick={addIngredient} className="ml-4">Add</Button>
                             </div>
+                            <AnimatePresence mode="popLayout">
                             {ingredientFields.map((field, i) => (
-                                <div key={field.id} className={style.ingredient}>
+                                <motion.div key={field.id} className={style.ingredient} variants={rowVariants} initial="hidden" animate="show" exit="exit">
                                     <Button type="button" onClick={() => removeIngredient(i)} className={style.remove}>-</Button>
                                     <div className={style.spec}>
                                         <FormItem>
@@ -296,9 +304,10 @@ function AddRecipieForm({ conversions, setModMode, recipie, setRecipie } : AddPr
                                             <Button type="button" variant="outline" onClick={() => handleConvert(i)}>Conver to Grams</Button>
                                         }
                                     </div>
-                                </div>
+                                </motion.div>
                             ))}
-                            {ingredientFields.length >= 2 ? 
+                            </AnimatePresence>
+                            {ingredientFields.length >= 2 ?
                                 <Button type="button" onClick={addIngredient} className="w-full">Add Ingredient</Button> : <></>
                             }
                         </div>
@@ -313,8 +322,9 @@ function AddRecipieForm({ conversions, setModMode, recipie, setRecipie } : AddPr
                                 <h3 className="text-lg font-medium">Instructions</h3>
                                 <Button type="button" onClick={addInstruction} className="ml-4">Add</Button>
                             </div>
+                            <AnimatePresence mode="popLayout">
                             {instructionFields.map((field, i) => (
-                                <div key={field.id} className={style.instruction}>
+                                <motion.div key={field.id} className={style.instruction} variants={rowVariants} initial="hidden" animate="show" exit="exit">
                                     <Button type="button" onClick={() => removeInstruction(i)} className={style.remove}>-</Button>
                                     <FormItem >
                                         <FormControl>
@@ -333,9 +343,10 @@ function AddRecipieForm({ conversions, setModMode, recipie, setRecipie } : AddPr
                                             <p className="mt-1 text-sm text-red-500">{form.formState.errors.instructions?.[i]?.value.message}</p>
                                         )}
                                     </FormItem>
-                                </div>
+                                </motion.div>
                             ))}
-                            {instructionFields.length >= 2 ? 
+                            </AnimatePresence>
+                            {instructionFields.length >= 2 ?
                                 <Button type="button" onClick={addInstruction} className="w-full">Add Instruction</Button> : <></>
                             }
                         </div>

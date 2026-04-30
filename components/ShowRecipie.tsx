@@ -52,44 +52,62 @@ if (modMode) {
 
       return (
       <>
-        <div>
-          <br />
-          <div className="relative">
-            {recipieHere.image !== "" && <Image width={0} height={0} sizes='100vh' src={`/api/uploads/${recipieHere.image}`} alt={recipieHere.image} className={style.image} />}
-          </div>
-          <br />
-          <div className="flex justify-start items-start">
-            <p className="pr-5">Batch size: </p>
-            <Select onValueChange={(e) => setMultiplier(Number(e))}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder={1} />
-              </SelectTrigger>
-              <SelectContent>
+        <div className={style['recipe-view']}>
+          {recipieHere.image !== "" && (
+            <Image width={0} height={0} sizes='100vw' src={`/api/uploads/${recipieHere.image}`} alt={recipieHere.image} className={style.image} />
+          )}
+
+          <div className="flex flex-wrap items-center gap-3 mb-4">
+            <div>
+              <p className={style['info-label']}>Servings</p>
+              <p className={style['info-value']}>{recipieHere.servings * ingMultiplier}</p>
+            </div>
+            <div>
+              <p className={style['info-label']}>Cal / serving</p>
+              <p className={style['info-value']}>{recipieHere.cals}</p>
+            </div>
+            <div className="flex items-center gap-2 ml-auto">
+              <span className="text-sm text-muted-foreground">Batch:</span>
+              <Select onValueChange={(e) => setMultiplier(Number(e))}>
+                <SelectTrigger className="w-[100px] h-9 text-sm">
+                  <SelectValue placeholder="1×" />
+                </SelectTrigger>
+                <SelectContent>
                   {Object.values(multipliers).map((mult, index) => (
-                      <SelectItem value={mult.toString()} key={index}>{mult === .25 ? '1/4' : mult === .33 ? '1/3' : mult === .5 ? '1/2' : mult}</SelectItem>
+                    <SelectItem value={mult.toString()} key={index}>
+                      {mult === .25 ? '¼×' : mult === .33 ? '⅓×' : mult === .5 ? '½×' : `${mult}×`}
+                    </SelectItem>
                   ))}
-              </SelectContent>
-            </Select>&nbsp;&nbsp;
-            <div className="flex gap-2">
-               <Button className="action-btn ml-auto" onClick={handleModify} aria-label="modify recipe">
-                  <PencilLine />
-                </Button>
-                <Button variant="destructive" className="action-btn ml-auto" onClick={handleDelete} aria-label="delete recipe">
-                  <Trash2 />
-                </Button>
-             </div>
-          </div><br />
-          <p>Servings: {recipieHere.servings * ingMultiplier}</p>
-          <p>Calories per serving: {recipieHere.cals}</p><br />
-          <h1>Ingredients:</h1>
-          {recipieHere.ingredients.map((i) => (
-              <p key={i.name}>{i.name} - {i.value * ingMultiplier} {i.type}</p>
-          ))}
-          <br />
-          <h1>Steps:</h1>
-          {recipieHere.instructions.map((i, j) => (
-              <p key={j} className="mb-2">{j + 1}: {i}</p>
-          ))}
+                </SelectContent>
+              </Select>
+              <button className="action-btn" onClick={handleModify} aria-label="modify recipe">
+                <PencilLine className="h-3.5 w-3.5" />
+              </button>
+              <button className="action-btn" style={{background: 'hsl(var(--destructive)/0.1)', color: 'hsl(var(--destructive))'}} onClick={handleDelete} aria-label="delete recipe">
+                <Trash2 className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          </div>
+
+          <h2 className="section-label mt-5 mb-2">Ingredients</h2>
+          <div className={style['ingredients-list']}>
+            {recipieHere.ingredients.map((i) => (
+              <div key={i.name} className={style['ingredient-item']}>
+                <span className={style['ingredient-name']}>{i.name}</span>
+                <span className={style['ingredient-amount']}>{i.value * ingMultiplier} {i.type}</span>
+              </div>
+            ))}
+          </div>
+
+          <h2 className="section-label mt-5 mb-2">Steps</h2>
+          <div className={style['instructions-list']}>
+            {recipieHere.instructions.map((i, j) => (
+              <div key={j} className={style['instruction-item']}>
+                <span className={style['instruction-number']}>{j + 1}</span>
+                <p className={style['instruction-text']}>{i}</p>
+              </div>
+            ))}
+          </div>
         </div>
         <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
           <DialogContent>

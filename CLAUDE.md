@@ -1,0 +1,101 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+Kassies Recipes is a full-stack application with TypeScript, React, and Node.js. Uses Mongoose for MongoDB, Redux for state management, and a Stripe/Apple-style design system with Framer Motion animations.
+
+## Directory Structure
+- **app/api**: Backend API routes (Next.js App Router)
+- **app/globals.css**: Design tokens and global utility classes
+- **components**: Frontend UI components
+- **components/ui**: shadcn/ui + Radix primitives (Button, Input, Select, Dialog, etc.)
+- **interfaces**: TypeScript interfaces and Zod validation schemas
+- **models**: Mongoose models
+- **redux**: Redux Toolkit store and slices
+- **styles**: CSS Modules (List, Recipie, RecipieForm)
+- **utils/connectMongo.tsx**: MongoDB connection setup
+
+## Setup Instructions
+1. Ensure MongoDB is running locally (`mongodb://localhost:27017/recipies`)
+2. Start the development server: `npm run dev`
+
+## Development Commands
+- **Dev**: `npm run dev`
+- **Build**: `npm run build`
+- **Lint**: `npm run lint`
+- **Test**: `npm run test`
+- **Run single test**: `npm run test -- --testName="YourTestName"`
+- **Type check**: `npx tsc --noEmit`
+
+## Key Technologies
+- Next.js 15.1.3 (App Router), React 19, TypeScript 5
+- Tailwind CSS 3.4 + CSS Modules
+- shadcn/ui + Radix UI (Dialog, Select, NavigationMenu, etc.)
+- Framer Motion (list stagger, form row AnimatePresence)
+- Redux Toolkit + React-Redux
+- React Hook Form + Zod validation
+- Mongoose 8 + MongoDB
+- lucide-react icons
+
+## Design System
+Single accent: `orange-500` (#f97316). No gradients, no glassmorphism.
+
+**CSS variables** (defined in `app/globals.css` @layer base):
+- `--background`, `--foreground`, `--card`, `--border`, `--muted`, `--muted-foreground`
+- `--accent` (orange-500), `--accent-foreground`
+- `--destructive`, `--destructive-foreground`
+- `--shadow-xs`, `--shadow-sm`, `--shadow-md`, `--shadow-hover`
+- `--radius: 0.625rem`
+
+**Light mode**: `#FCFCFC` background, slate-900 foreground, slate-200 borders
+**Dark mode**: `#0B0F1A` background, slate-50 foreground — toggled via `.dark` class on `<html>`
+
+**Global utility classes** in `globals.css`: `.section-label`, `.action-btn`, `.btn-primary`, `.btn-ghost`, `.search-input`, `.recipe-card-clean`, `.fade-up`
+
+**Theme persistence**: FOUC-free via inline blocking script in `<head>` that reads `localStorage` before React hydrates.
+
+## Animations
+- **Recipe list**: Framer Motion stagger (`containerVariants` + `itemVariants`) in `Recipies.tsx`
+- **Form rows**: `AnimatePresence mode="popLayout"` on ingredient/instruction rows in both form components — smooth enter/exit when adding/removing rows
+- **Modals**: Radix `data-[state=open/closed]` CSS animation classes (do not wrap with Framer AnimatePresence)
+- **Hover**: `whileHover={{ y: -2 }}` on recipe list items via Framer
+
+## API Routes
+| Method | Path | Action |
+|--------|------|--------|
+| GET | `/api/recipie` | Fetch all recipes |
+| POST | `/api/recipie` | Add / modify / delete recipe |
+| GET | `/api/conversion` | Fetch all conversions |
+| POST | `/api/conversion` | Add conversion |
+| GET | `/api/uploads/[filename]` | Serve uploaded images |
+| GET | `/api/health` | Health check |
+
+POST body uses `action: 'add' | 'modify' | 'delete'`. Add/modify use `multipart/form-data` with `image` file and `recipie` JSON fields.
+
+## Redux Store Shape
+```typescript
+{
+  recipieReducer: { value: { recipies: Array<recipie> } },
+  convertionReducer: { value: { conversions: Array<conversion> } },
+  recipieListReducer: {
+    searchParam: string,
+    addRecipieIsOpen: boolean,
+    addConversionIsOpen: boolean,
+    recipieIsOpen: boolean
+  }
+}
+```
+
+## MongoDB Notes
+- Connection: `mongodb://localhost:27017/recipies` (hardcoded, IPv4 forced)
+- Each API call opens and closes its own connection (no pooling)
+- Models: `Recipie`, `Conversion`
+
+## Important Rules
+- **Do not modify** Redux store shape, API routes, Zod schemas, or React Hook Form logic without explicit request
+- **Do not wrap** Radix Dialog/Modal with Framer `AnimatePresence` — Radix controls mount/unmount internally
+- **Textarea auto-resize** logic (`scrollHeight`) in form components must be preserved
+- **`onInteractOutside` prevention** in `Modal.tsx` is intentional — modals are non-dismissible by backdrop click
+- All focus rings use orange (`hsl(var(--accent))`), never purple
+- Dark mode overrides via CSS variable inheritance — no `html:global(.dark)` selectors needed in CSS Modules

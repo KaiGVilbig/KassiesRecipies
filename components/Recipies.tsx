@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { recipie } from '@/interfaces';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
@@ -20,6 +21,23 @@ import AddConversion from './AddConversion';
 import style from '@/styles/List.module.css'
 import Image from 'next/image';
 import { WhichOpen } from './enums';
+
+const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+        opacity: 1,
+        transition: { staggerChildren: 0.06, delayChildren: 0.1 }
+    }
+}
+
+const itemVariants = {
+    hidden: { opacity: 0, y: 12 },
+    show: {
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.25, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] }
+    }
+}
 
 function Recipies() {
     const dispatch = useDispatch<AppDispatch>();
@@ -87,20 +105,33 @@ function Recipies() {
     }, [gotRecipies, gotConversions, dispatch])
 
        return (
-            <div className="flex justify-center items-start h-screen p-4">
-                <div className='w-[10px]'></div>
-                <div className={`${style.container} backdrop-blur-lg`}>
-                     {recipies.filter(r => r.name.includes(search)).map((recipie) => (
-                         <li key={recipie._id} className={`${style.list} flex justify-start items-start`} onClick={() => handleOpenRecipie(recipie)}>
-                             {recipie.image !== "" && <Image width={64} height={64} sizes='64px' src={`/api/uploads/${recipie.image}`} alt={recipie.image} className={style.image} />}
-                             <span className={style.recipeName}>{recipie.name}</span>
-                         </li>
-                     ))}
-                 </div>
-                 <Modal title="Add a Recipe" isOpen={isOpen} type={WhichOpen.add}>
-                     <AddRecipieForm conversions={conversions} />
-                 </Modal>
-                 <Modal title="Add a conversion" isOpen={isConversionOpen} type={WhichOpen.conv}>
+            <div className="flex flex-col items-center pt-6 pb-12 min-h-[calc(100vh-57px)]">
+                <motion.div
+                    className={style.container}
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="show"
+                >
+                    <AnimatePresence>
+                        {recipies.filter(r => r.name.toLowerCase().includes(search.toLowerCase())).map((recipie) => (
+                            <motion.li
+                                key={recipie._id}
+                                className={style.list}
+                                variants={itemVariants}
+                                onClick={() => handleOpenRecipie(recipie)}
+                                whileHover={{ y: -2 }}
+                                transition={{ duration: 0.15 }}
+                            >
+                                {recipie.image !== "" && <Image width={52} height={52} sizes='52px' src={`/api/uploads/${recipie.image}`} alt={recipie.image} className={style.image} />}
+                                <span className={style.recipeName}>{recipie.name}</span>
+                            </motion.li>
+                        ))}
+                    </AnimatePresence>
+                </motion.div>
+                <Modal title="Add a Recipe" isOpen={isOpen} type={WhichOpen.add}>
+                    <AddRecipieForm conversions={conversions} />
+                </Modal>
+                <Modal title="Add a conversion" isOpen={isConversionOpen} type={WhichOpen.conv}>
                     <AddConversion />
                 </Modal>
                 {openRecipie && (

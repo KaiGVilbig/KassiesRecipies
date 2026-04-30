@@ -45,32 +45,34 @@ export default function Navbar() {
     }
 
      return (
-        <nav className="w-full h-auto p-4">
-            <div className="flex justify-between items-center">
+        <nav className="w-full border-b border-border bg-background/95 backdrop-blur-sm sticky top-0 z-40">
+            <div className="flex items-center justify-between max-w-2xl mx-auto px-4 py-3 gap-3">
                 <NavigationMenu>
                     <NavigationMenuList>
                       <NavigationMenuItem>
-                            <div className="text-2xl font-bold bg-gradient-to-r from-orange-400 via-orange-500 to-yellow-400 bg-clip-text text-transparent
-                                            dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400">
-                                Kassie's Recipes
+                            <div className="text-xl font-bold tracking-tight text-foreground">
+                                Kassie&apos;s Recipes
                             </div>
                         </NavigationMenuItem>
                     </NavigationMenuList>
                 </NavigationMenu>
-                <div className="ml-auto flex justify-between">
-                    <Input type="text" className="px-4 py-3 w-60 search-input" placeholder="Search recipes..." onChange={(e) => dispatch(setSearchParam(e.target.value))} />
-                    <Button variant="outline" onClick={() => setIsOpen(!isOpen)} className="navbar-button">
-                        <Menu />
+                <div className="flex items-center gap-2">
+                    <Input type="text" className="w-48 search-input hidden sm:block" placeholder="Search recipes..." onChange={(e) => dispatch(setSearchParam(e.target.value))} />
+                    <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)} aria-label="Toggle menu">
+                        <Menu className="h-4 w-4" />
                     </Button>
                 </div>
             </div>
             {isOpen &&
-                <div className="ml-auto flex justify-end gap-2 navbar-dropdown mt-[.5em]">
-                    <Button onClick={() => dispatch(setAddRecipieIsOpen(true))} className="btn-primary navbar-action-button">Add Recipe</Button>
-                     <Button onClick={() => dispatch(setAddConversionIsOpen(true))} className="btn-secondary navbar-action-button">Add Conversion</Button>
-                    <Button onClick={toggleTheme} className="theme-toggle" variant="outline">
-                        {isDarkMode ? <Sun /> : <Moon />}
-                    </Button>
+                <div className="border-t border-border bg-background/95 max-w-2xl mx-auto px-4 py-2 flex flex-wrap items-center gap-2">
+                    <Input type="text" className="search-input sm:hidden w-full mb-1" placeholder="Search recipes..." onChange={(e) => dispatch(setSearchParam(e.target.value))} />
+                    <div className="flex items-center gap-2 ml-auto">
+                        <Button onClick={() => dispatch(setAddRecipieIsOpen(true))} className="btn-primary h-9 text-sm">Add Recipe</Button>
+                        <Button onClick={() => dispatch(setAddConversionIsOpen(true))} className="btn-ghost h-9 text-sm">Add Conversion</Button>
+                        <Button onClick={toggleTheme} variant="ghost" size="icon" aria-label="Toggle theme">
+                            {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                        </Button>
+                    </div>
                 </div>
             }
         </nav>
